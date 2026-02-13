@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electra - Electricity Consumption Manager</title>
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --accent-color: #D4AF37;
+            --text-color: #ffffff;
+            --secondary-text: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            max-width: 1200px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #D4AF37, #FAD02E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        p.subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-text);
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mockup-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            perspective: 1000px;
+        }
+
+        .phone-mockup {
+            width: 280px;
+            height: 580px;
+            border: 12px solid #1a1a1a;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+                0 0 0 2px #333,
+                inset 0 0 20px rgba(0, 0, 0, 0.8);
+            background: #000;
+            transition: transform 0.5s ease;
+        }
+
+        .phone-mockup:hover {
+            transform: translateY(-20px) scale(1.02);
+            z-index: 10;
+        }
+
+        /* Center Phone pops out more */
+        .phone-mockup.center {
+            transform: scale(1.1);
+            z-index: 5;
+            box-shadow: 0 30px 60px rgba(212, 175, 55, 0.15),
+                0 0 0 2px #333;
+        }
+
+        .phone-mockup.center:hover {
+            transform: scale(1.15);
+        }
+
+        .phone-mockup img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Notch simulation */
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #1a1a1a;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 2;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 60px;
+        }
+
+        .feature-tag {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--accent-color);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        /* Decorative background elements */
+        .bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="container">
+        <h1>ELECTRA</h1>
+        <p class="subtitle">Smart Electricity Management made Simple. Track consumption, manage devices, and save on
+            your monthly bill.</p>
+
+        <div class="mockup-grid">
+            <!-- Left Phone: Profile/Settings -->
+            <div class="phone-mockup" style="transform: rotateY(15deg) translateX(20px) scale(0.95);">
+                <img src="screenshots/profile_screen.jpeg" alt="Profile Screen">
+            </div>
+
+            <!-- Center Phone: Home Dashboard -->
+            <div class="phone-mockup center">
+                <img src="screenshots/home_screen.jpeg" alt="Home Dashboard">
+            </div>
+
+            <!-- Right Phone: Analysis or Devices -->
+            <div class="phone-mockup" style="transform: rotateY(-15deg) translateX(-20px) scale(0.95);">
+                <img src="screenshots/analysis_screen.jpeg" alt="Analysis Screen">
+            </div>
+            <!-- Far Left Phone: Analysis or Devices -->
+            <div class="phone-mockup" style="transform: rotateY(25deg) translateX(40px) scale(0.85); opacity: 0.8;">
+                <img src="screenshots/add_device_screen.jpeg" alt="Analysis Screen">
+            </div>
+            <!-- Far Right Phone: Analysis or Devices -->
+            <div class="phone-mockup" style="transform: rotateY(-25deg) translateX(-40px) scale(0.85); opacity: 0.8;">
+                <img src="screenshots/history_screen.jpeg" alt="Analysis Screen">
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-tag">Real-time Tracking</div>
+            <div class="feature-tag">Budget Alerts</div>
+            <div class="feature-tag">Device Estimations</div>
+            <div class="feature-tag">History Analysis</div>
+        </div>
+    </div>
+
+</body>
+
+</html>
