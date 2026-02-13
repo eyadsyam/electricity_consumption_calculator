@@ -24,9 +24,15 @@
 ## 📸 App Preview
 
 <p align="center">
-  <img src="assets/images/screenshots/home_screen.jpeg" width="30%" alt="Home">
-  <img src="assets/images/screenshots/analysis_screen.jpeg" width="30%" alt="Analysis">
-  <img src="assets/images/screenshots/profile_screen.jpeg" width="30%" alt="Profile">
+  <img src="assets/images/screenshots/home_screen.jpeg" width="30%" alt="Home Screen">
+  <img src="assets/images/screenshots/analysis_screen.jpeg" width="30%" alt="Analysis Screen">
+  <img src="assets/images/screenshots/add_reading_screen.jpeg" width="30%" alt="Add Reading Screen">
+</p>
+
+<p align="center">
+  <img src="assets/images/screenshots/history_screen.jpeg" width="30%" alt="History Screen">
+  <img src="assets/images/screenshots/add_device_screen.jpeg" width="30%" alt="Add Device Screen">
+  <img src="assets/images/screenshots/profile_screen.jpeg" width="30%" alt="Profile Screen">
 </p>
 
 ---
