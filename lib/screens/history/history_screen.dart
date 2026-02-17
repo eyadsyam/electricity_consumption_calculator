@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:finalproject/core/theme/app_colors.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:finalproject/core/di/injection.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({super.key});
@@ -191,8 +193,30 @@ class HistoryPage extends StatelessWidget {
         );
       },
       onDismissed: (direction) async {
-        final box = await Hive.openBox<MeterReading>('meter_readings');
-        await box.deleteAt(index);
+        // 1. Capture ID before local deletion
+        final readingId = reading.id;
+
+        // 2. Delete from Supabase (Cloud)
+        try {
+          final supabaseClient = sl<SupabaseClient>();
+          await supabaseClient
+              .from('meter_readings')
+              .delete()
+              .eq('id', readingId);
+          debugPrint('Deleted reading $readingId from Supabase');
+        } catch (e) {
+          debugPrint('Failed to delete from Supabase: $e');
+        }
+
+        // 3. Delete from Hive (Local)
+        // Use delete() on the HiveObject directly if possible, or deleteAt via box
+        if (reading.isInBox) {
+          await reading.delete();
+        } else {
+          // Fallback if not in box (unlikely with ValueListenable)
+          final box = await Hive.openBox<MeterReading>('meter_readings');
+          await box.deleteAt(index);
+        }
 
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:finalproject/core/theme/app_colors.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+// Updated Import to the correct Entity location
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
 import 'package:uuid/uuid.dart';
 import 'package:finalproject/services/online_first_sync_service.dart';
-import 'package:finalproject/services/tariff_calculator.dart';
+// Updated Import to the new accurate Calculator Service
+import 'package:finalproject/services/bill_calculator_service.dart';
+import 'package:finalproject/services/tariff_service.dart'; // For tier name
 import 'package:finalproject/utils/reading_utils.dart';
 import 'package:intl/intl.dart';
 
@@ -20,14 +23,20 @@ class _AddReadingPageState extends State<AddReadingPage> {
   final _formKey = GlobalKey<FormState>();
   final _previousReadingController = TextEditingController();
   final _currentReadingController = TextEditingController();
+  final _installmentsController = TextEditingController();
   final _syncService = OnlineFirstSyncService();
+  final _scrollController = ScrollController(); // Added ScrollController
+  final _currentReadingFocusNode = FocusNode();
+  final _previousReadingFocusNode = FocusNode();
 
   DateTime _selectedDate = DateTime.now();
   double? _consumption;
   double? _estimatedCost;
+  String? _tierName;
   bool _isLoading = false;
   bool _isListening = false;
   bool _isProcessingImage = false;
+  bool _showInstallments = false;
 
   @override
   void initState() {
@@ -35,12 +44,18 @@ class _AddReadingPageState extends State<AddReadingPage> {
     _loadLastReading();
     _currentReadingController.addListener(_calculateConsumption);
     _previousReadingController.addListener(_calculateConsumption);
+    _installmentsController.addListener(_calculateConsumption);
   }
 
   @override
   void dispose() {
     _currentReadingController.removeListener(_calculateConsumption);
     _previousReadingController.removeListener(_calculateConsumption);
+    _installmentsController.removeListener(_calculateConsumption);
+    _installmentsController.dispose();
+    _currentReadingFocusNode.dispose();
+    _previousReadingFocusNode.dispose();
+    _scrollController.dispose();
     _previousReadingController.dispose();
     _currentReadingController.dispose();
     super.dispose();
@@ -48,7 +63,9 @@ class _AddReadingPageState extends State<AddReadingPage> {
 
   Future<void> _loadLastReading() async {
     try {
-      final box = await Hive.openBox<MeterReading>('meter_readings');
+      // Ensure specific type is used if already open
+      final box = Hive.box<MeterReading>('meter_readings');
+
       if (box.isNotEmpty) {
         final readings = box.values.toList()
           ..sort((a, b) => b.readingDate.compareTo(a.readingDate));
@@ -59,10 +76,31 @@ class _AddReadingPageState extends State<AddReadingPage> {
             _previousReadingController.text = lastReading.readingValue
                 .toStringAsFixed(0);
           });
+          // Focus on current reading if previous exists
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (mounted) {
+              FocusScope.of(context).requestFocus(_currentReadingFocusNode);
+            }
+          });
         }
+      } else {
+        // First time: Focus on previous reading
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (mounted) {
+            FocusScope.of(context).requestFocus(_previousReadingFocusNode);
+          }
+        });
       }
     } catch (e) {
       debugPrint('⚠️ Failed to load last reading: $e');
+      // If box is not open (edge case), try opening
+      try {
+        if (!Hive.isBoxOpen('meter_readings')) {
+          await Hive.openBox<MeterReading>('meter_readings');
+        }
+      } catch (e2) {
+        debugPrint('Critical Hive Error: $e2');
+      }
     }
   }
 
@@ -75,6 +113,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
         setState(() {
           _consumption = null;
           _estimatedCost = null;
+          _tierName = null;
         });
       }
       return;
@@ -87,18 +126,43 @@ class _AddReadingPageState extends State<AddReadingPage> {
         setState(() {
           _consumption = null;
           _estimatedCost = null;
+          _tierName = null;
         });
       }
       return;
     }
 
     try {
-      final costData = TariffCalculator.calculateProgressiveCost(consumption);
+      final installments = double.tryParse(_installmentsController.text) ?? 0.0;
+
+      // Use the new precise BillCalculatorService
+      final billDetails = BillCalculatorService.calculateBill(
+        consumption,
+        installments: installments,
+      );
+      final tier = TariffService.getTier(consumption);
+
       if (mounted) {
         setState(() {
           _consumption = consumption;
-          _estimatedCost = costData['total'] as double?;
+          // Use 'final_payable' (rounded integer) or 'adjusted_total' (exact)
+          // Showing final payable to match printed bill expectation
+          _estimatedCost = (billDetails['final_payable'] as num).toDouble();
+          _tierName = 'الشريحة $tier';
         });
+
+        // Auto-scroll to bottom to show summary if consumption is valid
+        if (_consumption != null && _consumption! > 0) {
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (_scrollController.hasClients) {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeOut,
+              );
+            }
+          });
+        }
       }
     } catch (e) {
       debugPrint('⚠️ Calculation error: $e');
@@ -162,8 +226,14 @@ class _AddReadingPageState extends State<AddReadingPage> {
     setState(() => _isLoading = true);
 
     try {
+      final box = Hive.box<MeterReading>('meter_readings');
+      final authBox = Hive.box('auth');
+      final userId =
+          authBox.get('user_id') ?? authBox.get('email') ?? 'local_user';
+
       final reading = MeterReading(
         id: const Uuid().v4(),
+        userId: userId,
         readingDate: _selectedDate,
         readingValue: double.parse(_currentReadingController.text),
         consumptionKwh: _consumption!,
@@ -171,7 +241,6 @@ class _AddReadingPageState extends State<AddReadingPage> {
         createdAt: DateTime.now(),
       );
 
-      final box = await Hive.openBox<MeterReading>('meter_readings');
       await box.add(reading);
 
       await _syncService.autoSync();
@@ -227,14 +296,116 @@ class _AddReadingPageState extends State<AddReadingPage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
+          controller: _scrollController, // Attach ScrollController
           padding: EdgeInsets.all(
-            isSmallScreen ? 16 : (isMediumScreen ? 20 : 24),
+            isSmallScreen ? 12 : (isMediumScreen ? 16 : 20), // Reduced padding
           ),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Disclaimer Card
+                Container(
+                  padding: EdgeInsets.all(isSmallScreen ? 10 : 12),
+                  margin: EdgeInsets.only(bottom: isSmallScreen ? 16 : 20),
+                  decoration: BoxDecoration(
+                    color: AppColors.royalGold.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.royalGold.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: AppColors.royalGold,
+                        size: isSmallScreen ? 20 : 24,
+                      ),
+                      SizedBox(width: isSmallScreen ? 10 : 12),
+                      Expanded(
+                        child: Text(
+                          "خد بالك: الأسعار دي تقريبية، ممكن تفرق عن الوصل الحقيقي عشان في رسوم ووقت ومكان.",
+                          style: GoogleFonts.cairo(
+                            color: Colors.white70,
+                            fontSize: isSmallScreen ? 11 : 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Date Card - Moved to top for visibility as requested
+                _buildCard(
+                  isSmallScreen: isSmallScreen,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_today,
+                            color: AppColors.royalGold,
+                            size: isSmallScreen ? 20 : 24,
+                          ),
+                          SizedBox(width: isSmallScreen ? 8 : 12),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              'تاريخ القراءة',
+                              style: GoogleFonts.cairo(
+                                fontSize: isSmallScreen ? 16 : 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: isSmallScreen ? 12 : 16),
+                      InkWell(
+                        onTap: _showEnhancedDatePicker,
+                        child: Container(
+                          padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
+                          decoration: BoxDecoration(
+                            color: AppColors.bgBlack,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: AppColors.royalGold.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  DateFormat(
+                                    'dd/MM/yyyy',
+                                    'ar',
+                                  ).format(_selectedDate),
+                                  style: GoogleFonts.cairo(
+                                    color: Colors.white,
+                                    fontSize: isSmallScreen ? 14 : 16,
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                Icons.edit_calendar,
+                                color: AppColors.royalGold,
+                                size: isSmallScreen ? 20 : 24,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: isSmallScreen ? 16 : 20),
+
                 // Previous Reading Card
                 _buildCard(
                   isSmallScreen: isSmallScreen,
@@ -265,6 +436,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                       SizedBox(height: isSmallScreen ? 12 : 16),
                       TextFormField(
                         controller: _previousReadingController,
+                        focusNode: _previousReadingFocusNode,
                         keyboardType: TextInputType.number,
                         style: GoogleFonts.cairo(
                           color: Colors.white,
@@ -351,6 +523,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                       SizedBox(height: isSmallScreen ? 12 : 16),
                       TextFormField(
                         controller: _currentReadingController,
+                        focusNode: _currentReadingFocusNode,
                         keyboardType: TextInputType.number,
                         style: GoogleFonts.cairo(
                           color: Colors.white,
@@ -500,6 +673,95 @@ class _AddReadingPageState extends State<AddReadingPage> {
                 ),
                 SizedBox(height: isSmallScreen ? 16 : 20),
 
+                // Installments / Extra Fees Input (Collapsible)
+                _buildCard(
+                  isSmallScreen: isSmallScreen,
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _showInstallments = !_showInstallments;
+                            if (!_showInstallments) {
+                              _installmentsController.clear();
+                              _calculateConsumption();
+                            }
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.receipt_long,
+                              color: AppColors.royalGold,
+                              size: isSmallScreen ? 20 : 24,
+                            ),
+                            SizedBox(width: isSmallScreen ? 8 : 12),
+                            Expanded(
+                              child: Text(
+                                'أقساط / رسوم إضافية',
+                                style: GoogleFonts.cairo(
+                                  fontSize: isSmallScreen ? 15 : 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            Switch(
+                              value: _showInstallments,
+                              onChanged: (val) {
+                                setState(() {
+                                  _showInstallments = val;
+                                  if (!val) {
+                                    _installmentsController.clear();
+                                    _calculateConsumption();
+                                  }
+                                });
+                              },
+                              activeColor: AppColors.royalGold,
+                              activeTrackColor: AppColors.royalGold.withValues(
+                                alpha: 0.3,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_showInstallments) ...[
+                        SizedBox(height: isSmallScreen ? 16 : 20),
+                        TextFormField(
+                          controller: _installmentsController,
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          style: GoogleFonts.cairo(
+                            fontSize: isSmallScreen ? 16 : 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: '0.00',
+                            label: Text(
+                              'قيمة الرسوم',
+                              style: GoogleFonts.cairo(color: Colors.white54),
+                            ),
+                            hintStyle: GoogleFonts.cairo(color: Colors.white24),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: AppColors.bgBlack,
+                            suffixText: 'جنيه',
+                            suffixStyle: GoogleFonts.cairo(
+                              color: AppColors.royalGold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                SizedBox(height: isSmallScreen ? 16 : 20),
+
                 // Consumption & Cost Summary Card
                 if (_consumption != null && _estimatedCost != null)
                   _buildCard(
@@ -544,7 +806,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                         SizedBox(height: isSmallScreen ? 12 : 16),
                         _buildSummaryRow(
                           'الشريحة',
-                          TariffCalculator.determineTier(_consumption!)['name'],
+                          _tierName ?? '-',
                           Icons.layers,
                           isSmallScreen,
                         ),
@@ -554,73 +816,6 @@ class _AddReadingPageState extends State<AddReadingPage> {
                 SizedBox(height: isSmallScreen ? 16 : 20),
 
                 // Date Card - MOVED TO BOTTOM
-                _buildCard(
-                  isSmallScreen: isSmallScreen,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_today,
-                            color: AppColors.royalGold,
-                            size: isSmallScreen ? 20 : 24,
-                          ),
-                          SizedBox(width: isSmallScreen ? 8 : 12),
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              'تاريخ القراءة',
-                              style: GoogleFonts.cairo(
-                                fontSize: isSmallScreen ? 16 : 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: isSmallScreen ? 12 : 16),
-                      InkWell(
-                        onTap: _showEnhancedDatePicker,
-                        child: Container(
-                          padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
-                          decoration: BoxDecoration(
-                            color: AppColors.bgBlack,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: AppColors.royalGold.withValues(alpha: 0.3),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: Text(
-                                  DateFormat(
-                                    'dd/MM/yyyy',
-                                    'ar',
-                                  ).format(_selectedDate),
-                                  style: GoogleFonts.cairo(
-                                    color: Colors.white,
-                                    fontSize: isSmallScreen ? 14 : 16,
-                                  ),
-                                ),
-                              ),
-                              Icon(
-                                Icons.edit_calendar,
-                                color: AppColors.royalGold,
-                                size: isSmallScreen ? 20 : 24,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: isSmallScreen ? 24 : 32),
 
                 // Save Button
                 SizedBox(
@@ -659,7 +854,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
 
   Widget _buildCard({required bool isSmallScreen, required Widget child}) {
     return Container(
-      padding: EdgeInsets.all(isSmallScreen ? 16 : 20),
+      padding: EdgeInsets.all(isSmallScreen ? 12 : 16), // Reduced padding
       decoration: BoxDecoration(
         color: AppColors.deepSurface,
         borderRadius: BorderRadius.circular(16),

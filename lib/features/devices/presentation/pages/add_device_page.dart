@@ -3,6 +3,7 @@ import 'package:finalproject/core/theme/app_colors.dart';
 import 'package:finalproject/features/devices/data/device_database.dart';
 import 'package:finalproject/features/devices/data/device_mapper.dart';
 import 'package:finalproject/features/devices/domain/entities/user_device.dart';
+import 'package:finalproject/services/tariff_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../cubit/device_cubit.dart';
@@ -38,131 +39,271 @@ class _AddDevicePageState extends State<AddDevicePage> {
   }
 
   void _addDevice(String name, DeviceData data) {
-    // Show a dialog to get usage hours and confirm watts
+    // Show a dialog to get usage hours and quantity
+    // Watts are taken from database directly
     final hoursController = TextEditingController(text: '1');
-    final wattsController = TextEditingController(
-      text: data.avgWatts.toStringAsFixed(0),
-    );
+    final quantityController = TextEditingController(text: '1');
+    double currentHours = 1.0;
+    int currentQuantity = 1;
+
+    // Helper to calculate costs
+    Map<String, String> calculateEstimates(double hours, int quantity) {
+      if (hours <= 0 || quantity <= 0) return {'kwh': '0', 'cost': '0'};
+
+      final dailyKwh = (data.avgWatts * hours * quantity) / 1000;
+      final monthlyKwh = dailyKwh * 30;
+
+      // Calculate estimated monthly cost for this device alone
+      final estimatedCost = TariffService.calculateCost(monthlyKwh);
+
+      return {
+        'dailyKwh': dailyKwh.toStringAsFixed(2),
+        'monthlyKwh': monthlyKwh.toStringAsFixed(1),
+        'cost': estimatedCost.toStringAsFixed(1),
+      };
+    }
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.deepSurface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            Icon(_getIcon(data.icon), color: AppColors.royalGold),
-            const SizedBox(width: 10),
-            Text(
-              "إعدادات $name",
-              style: GoogleFonts.cairo(color: Colors.white),
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setState) {
+          final estimates = calculateEstimates(currentHours, currentQuantity);
+
+          return AlertDialog(
+            backgroundColor: AppColors.deepSurface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
             ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: hoursController,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
+            title: Row(
+              children: [
+                Icon(_getIcon(data.icon), color: AppColors.royalGold),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    "إضافة $name",
+                    style: GoogleFonts.cairo(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Info Card
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.bgBlack,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "متوسط القدرة:",
+                          style: GoogleFonts.cairo(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          "${data.avgWatts.toInt()} وات",
+                          style: GoogleFonts.outfit(
+                            color: AppColors.royalGold,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Quantity Input
+                  TextField(
+                    controller: quantityController,
+                    keyboardType: TextInputType.number,
+                    style: GoogleFonts.cairo(color: Colors.white),
+                    onChanged: (val) {
+                      setState(() {
+                        currentQuantity = int.tryParse(val) ?? 1;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: "العدد",
+                      labelStyle: GoogleFonts.cairo(color: Colors.white54),
+                      filled: true,
+                      fillColor: AppColors.bgBlack,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.format_list_numbered,
+                        color: AppColors.royalGold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  // Hours Input
+                  TextField(
+                    controller: hoursController,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    style: GoogleFonts.cairo(color: Colors.white),
+                    onChanged: (val) {
+                      setState(() {
+                        currentHours = double.tryParse(val) ?? 0;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: "ساعات التشغيل اليومية",
+                      labelStyle: GoogleFonts.cairo(color: Colors.white54),
+                      suffixText: "ساعة",
+                      filled: true,
+                      fillColor: AppColors.bgBlack,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.access_time,
+                        color: AppColors.royalGold,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Live Estimates
+                  if (currentHours > 0) ...[
+                    const Divider(color: Colors.white10),
+                    const SizedBox(height: 10),
+                    _buildEstimateRow(
+                      "الاستهلاك اليومي:",
+                      "${estimates['dailyKwh']} كيلووات",
+                    ),
+                    const SizedBox(height: 8),
+                    _buildEstimateRow(
+                      "الاستهلاك الشهري:",
+                      "${estimates['monthlyKwh']} كيلووات",
+                    ),
+                    const SizedBox(height: 8),
+                    _buildEstimateRow(
+                      "التكلفة الشهرية المتوقعة:",
+                      "${estimates['cost']} جنيه",
+                      isHighlight: true,
+                    ),
+                  ],
+                ],
               ),
-              style: GoogleFonts.cairo(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: "ساعات التشغيل اليومية",
-                labelStyle: GoogleFonts.cairo(color: Colors.white54),
-                suffixText: "ساعة",
-                filled: true,
-                fillColor: AppColors.bgBlack,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  "إلغاء",
+                  style: GoogleFonts.cairo(color: Colors.white54),
                 ),
               ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: wattsController,
-              keyboardType: TextInputType.number,
-              style: GoogleFonts.cairo(color: Colors.white),
-              decoration: InputDecoration(
-                labelText: "قدرة الجهاز (وات)",
-                labelStyle: GoogleFonts.cairo(color: Colors.white54),
-                suffixText: "وات",
-                filled: true,
-                fillColor: AppColors.bgBlack,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+              ElevatedButton(
+                onPressed: () {
+                  final hours = double.tryParse(hoursController.text) ?? 0;
+                  final quantity = int.tryParse(quantityController.text) ?? 1;
+
+                  if (hours <= 0 || quantity <= 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "يرجى إدخال بيانات صحيحة",
+                          style: GoogleFonts.cairo(),
+                        ),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                    return;
+                  }
+
+                  final device = UserDevice(
+                    id: DateTime.now().millisecondsSinceEpoch.toString(),
+                    deviceName: name,
+                    category: data.category,
+                    powerWatts: data.avgWatts, // Using database value directly
+                    iconName: data.icon,
+                    usageHoursPerDay: hours,
+                    quantity: quantity,
+                    createdAt: DateTime.now(),
+                  );
+
+                  context.read<DeviceCubit>().addDevice(device);
+                  Navigator.pop(ctx);
+
+                  // Show success with details
+                  final est = calculateEstimates(hours, quantity);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "تمت الإضافة بنجاح\nتكلفة شهرية متوقعة: ${est['cost']} جنيه",
+                          style: GoogleFonts.cairo(),
+                          textAlign: TextAlign.right,
+                        ),
+                        backgroundColor: AppColors.royalGold,
+                        duration: const Duration(seconds: 4),
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.royalGold,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  "حفظ وإضافة",
+                  style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(
-              "إلغاء",
-              style: GoogleFonts.cairo(color: Colors.white54),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final hours = double.tryParse(hoursController.text) ?? 0;
-              final watts =
-                  double.tryParse(wattsController.text) ?? data.avgWatts;
-
-              if (hours <= 0) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "يرجى إدخال عدد ساعات صحيح",
-                      style: GoogleFonts.cairo(),
-                    ),
-                    backgroundColor: AppColors.error,
-                  ),
-                );
-                return;
-              }
-
-              final device = UserDevice(
-                id: DateTime.now().millisecondsSinceEpoch.toString(),
-                deviceName: name,
-                category: data.category,
-                powerWatts: watts,
-                iconName: data.icon,
-                usageHoursPerDay: hours,
-                createdAt: DateTime.now(),
-              );
-
-              context.read<DeviceCubit>().addDevice(device);
-              Navigator.pop(ctx); // Close dialog
-              Navigator.pop(context); // Close add page
-
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "تم إضافة $name بنجاح\nالاستهلاك المتوقع: ${(watts * hours / 1000).toStringAsFixed(2)} ك.و.س/يوم",
-                      style: GoogleFonts.cairo(),
-                      textAlign: TextAlign.right,
-                    ),
-                    backgroundColor: AppColors.royalGold,
-                    duration: const Duration(seconds: 3),
-                  ),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.royalGold,
-              foregroundColor: Colors.black,
-            ),
-            child: Text(
-              "حفظ وإضافة",
-              style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
+    );
+  }
+
+  Widget _buildEstimateRow(
+    String label,
+    String value, {
+    bool isHighlight = false,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.cairo(
+            color: Colors.white70,
+            fontSize: 12,
+            fontWeight: isHighlight ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        Text(
+          value,
+          style: GoogleFonts.outfit(
+            color: isHighlight ? AppColors.royalGold : Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: isHighlight ? 16 : 14,
+          ),
+        ),
+      ],
     );
   }
 

@@ -4,7 +4,7 @@ import 'package:finalproject/core/theme/app_colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
 
 class ChartPage extends StatelessWidget {
   const ChartPage({super.key});

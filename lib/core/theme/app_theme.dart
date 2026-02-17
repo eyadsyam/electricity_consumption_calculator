@@ -60,21 +60,21 @@ class AppTheme {
       ),
 
       // Typography
-      fontFamily: GoogleFonts.outfit().fontFamily,
-      textTheme: GoogleFonts.outfitTextTheme()
+      fontFamily: GoogleFonts.cairo().fontFamily,
+      textTheme: GoogleFonts.cairoTextTheme()
           .apply(
             bodyColor: isDark ? Colors.white : AppColors.luxuryBlack,
             displayColor: isDark ? AppColors.royalGold : AppColors.dullGold,
           )
           .copyWith(
             displayLarge: TextStyle(
-              fontSize: 32,
+              fontSize: 24, // Reduced from 32
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
               color: isDark ? AppColors.royalGold : AppColors.luxuryBlack,
             ),
             titleLarge: TextStyle(
-              fontSize: 20,
+              fontSize: 18, // Reduced from 20
               fontWeight: FontWeight.w600,
               color: isDark ? Colors.white : AppColors.luxuryBlack,
             ),
@@ -87,10 +87,10 @@ class AppTheme {
         centerTitle: true,
         iconTheme: IconThemeData(color: primaryColor),
         titleTextStyle: GoogleFonts.outfit(
-          fontSize: 20,
+          fontSize: 18, // Reduced from 20
           fontWeight: FontWeight.bold,
           color: primaryColor,
-          letterSpacing: 1.5,
+          letterSpacing: 1.2,
         ),
       ),
 

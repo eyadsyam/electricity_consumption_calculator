@@ -5,11 +5,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:finalproject/features/auth/presentation/pages/login_page.dart';
 import 'package:finalproject/screens/profile/developer_screen.dart';
-
 import 'dart:convert';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:finalproject/features/notifications/presentation/pages/notification_settings_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -264,13 +262,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _notificationsSettings() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const NotificationSettingsPage()),
-    );
-  }
-
   Future<void> _helpSupport() async {
     showDialog(
       context: context,
@@ -517,11 +508,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       "إعدادات الميزانية",
                       _budgetSettings,
                     ),
-                    _buildProfileOption(
-                      Icons.notifications_outlined,
-                      "الإشعارات",
-                      _notificationsSettings,
-                    ),
+
                     _buildProfileOption(
                       Icons.help_outline,
                       "المساعدة والدعم",

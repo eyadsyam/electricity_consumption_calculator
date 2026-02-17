@@ -1,9 +1,9 @@
 import 'package:finalproject/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:finalproject/services/tariff_calculator.dart';
+import 'package:finalproject/services/bill_calculator_service.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
 import 'package:uuid/uuid.dart';
 
 class AddReadingSheet extends StatefulWidget {
@@ -77,11 +77,11 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
     }
 
     try {
-      final costData = TariffCalculator.calculateProgressiveCost(consumption);
+      final costData = BillCalculatorService.calculateBill(consumption);
       if (mounted) {
         setState(() {
           _consumption = consumption;
-          _estimatedCost = costData['total'] as double?;
+          _estimatedCost = costData['final_payable'] as double;
         });
       }
     } catch (e) {
@@ -118,8 +118,12 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
     }
 
     try {
+      final authBox = Hive.box('auth');
+      final userId = authBox.get('email') ?? 'local_user';
+
       final reading = MeterReading(
         id: const Uuid().v4(),
+        userId: userId,
         readingDate: DateTime.now(),
         readingValue: currentReading,
         consumptionKwh: _consumption!,
@@ -127,7 +131,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
         createdAt: DateTime.now(),
       );
 
-      final box = await Hive.openBox<MeterReading>('meter_readings');
+      final box = Hive.box<MeterReading>('meter_readings');
       await box.add(reading);
 
       if (!mounted) return;

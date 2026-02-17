@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:finalproject/core/theme/app_theme.dart';
 import 'package:finalproject/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:finalproject/features/auth/presentation/pages/login_page.dart';
 import 'package:finalproject/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:finalproject/features/notifications/presentation/cubit/notification_cubit.dart';
+
 import 'package:finalproject/features/devices/presentation/cubit/device_cubit.dart';
 import 'package:finalproject/features/devices/domain/entities/user_device.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/budget_config.dart';
 import 'package:finalproject/screens/main_layout.dart';
-import 'package:finalproject/services/notification_service.dart';
+import 'package:finalproject/screens/splash/splash_screen.dart';
+
 import 'package:finalproject/services/permission_service.dart';
 import 'package:finalproject/core/di/injection.dart' as di;
 
@@ -29,29 +31,36 @@ void main() async {
   // Initialize Hive first
   await Hive.initFlutter();
 
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: 'https://bmchbrtqsqmrlzthjdod.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJtY2hicnRxc3Ftcmx6dGhqZG9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMzQyNjIsImV4cCI6MjA4NTgxMDI2Mn0.RuDnSoGFkf2oK1brpcF50xCaKORbg7xdwd1BLmx1FlA',
+  );
+
   // Initialize Dependency Injection
   await di.init();
-
-  // Initialize Notification Service
-  await NotificationService().initialize();
 
   // Register Hive Adapters
   if (!Hive.isAdapterRegistered(0)) {
     Hive.registerAdapter(UserDeviceAdapter());
   }
-  if (!Hive.isAdapterRegistered(1)) {
+  // Register MeterReadingAdapter (Type 5 based on entity file)
+  if (!Hive.isAdapterRegistered(5)) {
     Hive.registerAdapter(MeterReadingAdapter());
   }
+  // Register BudgetConfigAdapter (Type 2 based on entity file)
+  if (!Hive.isAdapterRegistered(2)) {
+    Hive.registerAdapter(BudgetConfigAdapter());
+  }
+  // Register Tariff Entities if needed (Type 3 & 4)
 
   // Open Hive boxes
   await Hive.openBox<UserDevice>('user_devices');
   await Hive.openBox<MeterReading>('meter_readings');
+  await Hive.openBox<BudgetConfig>('budget_configs');
   await Hive.openBox('app_settings');
   await Hive.openBox('auth');
-  await Hive.openBox('notifications_history');
-
-  // Initialize GetStorage
-  await GetStorage.init();
 
   runApp(const ElectraApp());
 }
@@ -64,7 +73,7 @@ class ElectraApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => di.sl<AuthCubit>()..checkAuth()),
-        BlocProvider(create: (_) => di.sl<NotificationCubit>()),
+
         BlocProvider(create: (_) => di.sl<DeviceCubit>()),
       ],
       child: MaterialApp(
@@ -72,6 +81,15 @@ class ElectraApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Electra - Smart Energy Tracker',
         theme: AppTheme.darkTheme,
+        builder: (context, child) {
+          // Force text scale factor to 1.0 to respect the design
+          return MediaQuery(
+            data: MediaQuery.of(
+              context,
+            ).copyWith(textScaler: const TextScaler.linear(1.0)),
+            child: child!,
+          );
+        },
         home: const AppInitializer(),
       ),
     );
@@ -83,6 +101,9 @@ class AppInitializer extends StatelessWidget {
   const AppInitializer({super.key});
 
   Future<Widget> _determineInitialPage() async {
+    // Show splash for at least 2.5 seconds
+    await Future.delayed(const Duration(milliseconds: 2500));
+
     final settingsBox = Hive.box('app_settings');
     final authBox = Hive.box('auth');
 
@@ -138,13 +159,7 @@ class AppInitializer extends StatelessWidget {
           return snapshot.data ?? const OnboardingPage();
         }
         // Show splash screen while determining
-        return const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFFD4AF37), // Royal Gold
-            ),
-          ),
-        );
+        return const SplashScreen();
       },
     );
   }

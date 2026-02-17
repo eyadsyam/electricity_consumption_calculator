@@ -8,7 +8,7 @@ part of 'meter_reading.dart';
 
 class MeterReadingAdapter extends TypeAdapter<MeterReading> {
   @override
-  final int typeId = 1;
+  final int typeId = 5;
 
   @override
   MeterReading read(BinaryReader reader) {
@@ -18,38 +18,41 @@ class MeterReadingAdapter extends TypeAdapter<MeterReading> {
     };
     return MeterReading(
       id: fields[0] as String,
-      readingValue: fields[1] as double,
-      readingDate: fields[2] as DateTime,
-      consumptionKwh: fields[3] as double?,
-      estimatedCost: fields[4] as double?,
-      notes: fields[5] as String?,
-      createdAt: fields[6] as DateTime?,
-      supabaseId: fields[7] as String?,
-      isSynced: fields[8] as bool,
+      userId: fields[1] as String,
+      readingValue: fields[2] as double,
+      readingDate: fields[3] as DateTime,
+      consumptionKwh: fields[4] as double?,
+      estimatedCost: fields[5] as double?,
+      notes: fields[6] as String?,
+      createdAt: fields[7] as DateTime?,
+      updatedAt: fields[8] as DateTime?,
+      isSynced: fields[9] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, MeterReading obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.readingValue)
+      ..write(obj.userId)
       ..writeByte(2)
-      ..write(obj.readingDate)
+      ..write(obj.readingValue)
       ..writeByte(3)
-      ..write(obj.consumptionKwh)
+      ..write(obj.readingDate)
       ..writeByte(4)
-      ..write(obj.estimatedCost)
+      ..write(obj.consumptionKwh)
       ..writeByte(5)
-      ..write(obj.notes)
+      ..write(obj.estimatedCost)
       ..writeByte(6)
-      ..write(obj.createdAt)
+      ..write(obj.notes)
       ..writeByte(7)
-      ..write(obj.supabaseId)
+      ..write(obj.createdAt)
       ..writeByte(8)
+      ..write(obj.updatedAt)
+      ..writeByte(9)
       ..write(obj.isSynced);
   }
 

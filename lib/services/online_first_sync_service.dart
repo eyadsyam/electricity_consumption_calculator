@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase/supabase.dart' as supabase;
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
 import 'package:finalproject/features/devices/domain/entities/user_device.dart';
 import 'package:finalproject/core/di/injection.dart';
 import 'dart:async';
@@ -319,13 +319,15 @@ class OnlineFirstSyncService {
       final readingsBox = await Hive.openBox<MeterReading>('meter_readings');
       await readingsBox.clear();
 
-      for (var data in readings) {
+      for (final dynamic item in readings) {
+        final data = item as Map<String, dynamic>;
         final reading = MeterReading(
           id: data['id'],
-          readingValue: data['reading_value'].toDouble(),
+          userId: uid,
+          readingValue: (data['reading_value'] as num).toDouble(),
           readingDate: DateTime.parse(data['reading_date']),
-          consumptionKwh: data['consumption_kwh']?.toDouble(),
-          estimatedCost: data['estimated_cost']?.toDouble(),
+          consumptionKwh: (data['consumption_kwh'] as num?)?.toDouble(),
+          estimatedCost: (data['estimated_cost'] as num?)?.toDouble(),
           createdAt: DateTime.parse(data['created_at']),
         );
         reading.isSynced = true;

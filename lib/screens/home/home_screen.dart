@@ -5,8 +5,10 @@ import 'package:finalproject/core/theme/app_theme.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:finalproject/features/devices/domain/entities/user_device.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
-import 'package:finalproject/features/notifications/presentation/pages/notification_page.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
+import 'package:finalproject/services/bill_calculator_service.dart';
+import 'package:finalproject/services/tariff_service.dart';
+
 import 'package:finalproject/features/devices/presentation/pages/device_inventory_page.dart';
 import 'package:finalproject/screens/meter_reading/add_reading_page.dart';
 
@@ -32,9 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadUserData() async {
-    final authBox = await Hive.openBox('auth');
-    final readingsBox = await Hive.openBox<MeterReading>('meter_readings');
-    final settingsBox = await Hive.openBox('settings');
+    if (!mounted) return;
+    // Ensure boxes are open (should be from main.dart)
+    final authBox = Hive.box('auth');
+    final readingsBox = Hive.box<MeterReading>('meter_readings');
+    // Use 'app_settings' consistent with main.dart
+    final settingsBox = Hive.box('app_settings');
 
     setState(() {
       userName = authBox.get('user_name', defaultValue: 'User');
@@ -49,61 +54,23 @@ class _HomeScreenState extends State<HomeScreen> {
         }).toList();
 
         if (thisMonthReadings.isNotEmpty) {
-          currentMonthKwh = thisMonthReadings
-              .map((r) => r.consumptionKwh ?? 0)
-              .reduce((a, b) => a + b);
-          currentMonthCost = _calculateCost(currentMonthKwh);
-          currentTier = _getTierName(currentMonthKwh);
+          // Calculate total consumption for the month
+          currentMonthKwh = thisMonthReadings.fold(
+            0.0,
+            (sum, item) => sum + (item.consumptionKwh ?? 0.0),
+          );
+
+          // Use accurate service
+          final billDetails = BillCalculatorService.calculateBill(
+            currentMonthKwh,
+          );
+          currentMonthCost = (billDetails['final_payable'] as num).toDouble();
+
+          final tier = TariffService.getTier(currentMonthKwh);
+          currentTier = 'الشريحة $tier';
         }
       }
     });
-  }
-
-  double _calculateCost(double kwh) {
-    if (kwh > 1000) {
-      return kwh * 2.23;
-    }
-
-    double cost = 0;
-    double remaining = kwh;
-
-    final tiers = [
-      {'max': 50.0, 'price': 0.68},
-      {'max': 100.0, 'price': 0.78},
-      {'max': 200.0, 'price': 0.95},
-      {'max': 350.0, 'price': 1.55},
-      {'max': 650.0, 'price': 1.95},
-      {'max': 1000.0, 'price': 2.10},
-    ];
-
-    double lastMax = 0;
-    for (var tier in tiers) {
-      if (remaining <= 0) break;
-
-      double tierKwh = (remaining < (tier['max']! - lastMax))
-          ? remaining
-          : (tier['max']! - lastMax);
-      cost += tierKwh * tier['price']!;
-      remaining -= tierKwh;
-      lastMax = tier['max']!;
-    }
-
-    if (kwh > 650 && kwh <= 1000) {
-      cost -= 378;
-      if (cost < 0) cost = 0;
-    }
-
-    return cost;
-  }
-
-  String _getTierName(double kwh) {
-    if (kwh <= 50) return 'الشريحة الأولى';
-    if (kwh <= 100) return 'الشريحة الثانية';
-    if (kwh <= 200) return 'الشريحة الثالثة';
-    if (kwh <= 350) return 'الشريحة الرابعة';
-    if (kwh <= 650) return 'الشريحة الخامسة';
-    if (kwh <= 1000) return 'الشريحة السادسة';
-    return 'الشريحة السابعة';
   }
 
   bool get _isOverBudget {
@@ -163,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
           if (monthlyBudget != null)
             TextButton(
               onPressed: () async {
-                final box = await Hive.openBox('settings');
+                final box = Hive.box('app_settings');
                 await box.delete('monthly_budget');
                 setState(() => monthlyBudget = null);
                 Navigator.pop(ctx);
@@ -181,10 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () async {
               final value = double.tryParse(controller.text);
               if (value != null && value > 0) {
-                final box = await Hive.openBox('settings');
+                final box = Hive.box('app_settings');
                 await box.put('monthly_budget', value);
                 setState(() => monthlyBudget = value);
                 Navigator.pop(ctx);
+
+                if (!context.mounted) return;
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -223,6 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildMonthlyCard(),
+                    // Disclaimer removed as requested
                     const SizedBox(height: 20),
                     _buildAddReadingButton(context),
                     const SizedBox(height: 30),
@@ -271,15 +241,51 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: AppColors.bgBlack,
       elevation: 0,
       flexibleSpace: FlexibleSpaceBar(
-        title: Text(
-          "مرحباً, $userName",
-          style: GoogleFonts.cairo(
-            color: AppColors.royalGold,
-            fontWeight: FontWeight.bold,
-          ),
+        titlePadding: const EdgeInsetsDirectional.only(start: 20, bottom: 12),
+        expandedTitleScale: 1.0,
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start, // Start is Right in RTL
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/app_logo_elegant.png',
+                  width: 45, // Increased size
+                  height: 45,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  "Electra",
+                  style: GoogleFonts.outfit(
+                    color: AppColors.royalGold,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22, // Slightly larger text
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsetsDirectional.only(
+                start: 4,
+              ), // Align text slightly
+              child: Text(
+                "مرحباً, $userName",
+                style: GoogleFonts.cairo(
+                  color: Colors.white70,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ],
         ),
+        centerTitle: false,
       ),
       actions: [
+        /*
         IconButton(
           icon: const Icon(
             Icons.notifications_outlined,
@@ -290,6 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(builder: (_) => const NotificationPage()),
           ),
         ),
+        */
       ],
     );
   }
@@ -330,12 +337,14 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "الاستهلاك الشهري",
-                  style: GoogleFonts.cairo(
-                    color: _isOverBudget ? Colors.white : Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.5,
+                FittedBox(
+                  child: Text(
+                    "الاستهلاك شهري", // Shortened slightly or rely on FittedBox
+                    style: GoogleFonts.cairo(
+                      color: _isOverBudget ? Colors.white : Colors.black87,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.5,
+                    ),
                   ),
                 ),
                 InkWell(
@@ -429,7 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  "${currentMonthKwh.toStringAsFixed(1)} كيلووات/ساعة",
+                  "${currentMonthKwh.toStringAsFixed(1)} وات",
                   style: GoogleFonts.cairo(
                     color: _isOverBudget ? Colors.white : Colors.black87,
                     fontSize: 12,
@@ -609,7 +618,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
-                Icons.electrical_services,
+                _getIcon(device.iconName),
                 color: AppColors.royalGold,
                 size: 24,
               ),
@@ -629,10 +638,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    "الاستهلاك المتوقع: ${(device.powerWatts * device.usageHoursPerDay / 1000).toStringAsFixed(2)} كيلووات/يوم",
+                    "العدد: ${device.quantity} | الاستهلاك: ${(device.monthlyConsumptionKwh).toStringAsFixed(1)} كيلووات/شهر",
                     style: GoogleFonts.cairo(
                       color: Colors.white54,
                       fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    "التكلفة المتوقعة: ${TariffService.calculateCost(device.monthlyConsumptionKwh).toStringAsFixed(1)} جنيه",
+                    style: GoogleFonts.cairo(
+                      color: AppColors.royalGold,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
@@ -642,5 +659,33 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  IconData _getIcon(String icon) {
+    switch (icon) {
+      case 'tv':
+        return Icons.tv;
+      case 'kitchen':
+        return Icons.kitchen;
+      case 'ac_unit':
+        return Icons.ac_unit;
+      case 'microwave':
+        return Icons.microwave;
+      case 'laptop':
+        return Icons.laptop;
+      case 'wind_power':
+        return Icons.wind_power;
+      case 'local_laundry_service':
+      case 'wash':
+        return Icons.local_laundry_service;
+      case 'lightbulb':
+        return Icons.lightbulb;
+      case 'iron':
+        return Icons.iron;
+      case 'water_drop':
+        return Icons.water_drop;
+      default:
+        return Icons.electrical_services;
+    }
   }
 }

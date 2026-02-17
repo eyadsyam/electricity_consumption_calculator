@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:supabase/supabase.dart' as supabase;
 import 'package:finalproject/core/di/injection.dart';
 import 'package:finalproject/features/auth/domain/entities/user.dart';
+import 'package:finalproject/services/central_sync_service.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -17,14 +18,21 @@ class AuthCubit extends Cubit<AuthState> {
       final savedPassword = box.get('password');
 
       if (savedEmail == email && savedPassword == password) {
-        final userName = box.get('user_name', defaultValue: 'User');
+        // Use name as saved, do not convert
+        var userName = box.get('user_name', defaultValue: 'المستخدم');
+
         emit(
           AuthAuthenticated(
-            UserEntity(id: email, email: email, name: userName),
+            UserEntity(
+              id: email,
+              email: email,
+              name: userName,
+              photo: box.get('photo_url'),
+            ),
           ),
         );
       } else {
-        emit(AuthError('Invalid email or password'));
+        emit(AuthError('البريد الإلكتروني أو كلمة المرور غير صحيحة'));
       }
     } catch (e) {
       emit(AuthError(e.toString()));
@@ -34,7 +42,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signUp(String email, String password, [String? name]) async {
     emit(AuthLoading());
     try {
-      final userName = name ?? 'User';
+      final userName = name ?? 'المستخدم';
 
       // Save to Hive (local)
       final box = await Hive.openBox('auth');
@@ -62,10 +70,10 @@ class AuthCubit extends Cubit<AuthState> {
             'created_at': DateTime.now().toIso8601String(),
           });
 
-          debugPrint('✅ User saved to Supabase: ${response.user!.id}');
+          debugPrint('User saved to Supabase: ${response.user!.id}');
         }
       } catch (e) {
-        debugPrint('⚠️ Supabase signup failed: $e');
+        debugPrint('Supabase signup failed: $e');
         // Continue anyway - user is saved locally
       }
 
@@ -82,18 +90,46 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     try {
       // User data is already saved to Hive by GoogleAuthService
-      final userName = userData['name'] ?? 'User';
+      final userName = userData['name'] ?? 'المستخدم';
       final email = userData['email'] ?? '';
+
+      // Explicitly save to Hive to ensure HomeScreen updates
+      final box = await Hive.openBox('auth');
+      await box.put('user_name', userName);
+      await box.put('email', email);
+      await box.put('is_authenticated', true);
+
+      final photoUrl = userData['photo'];
+      if (photoUrl != null) {
+        await box.put('photo_url', photoUrl);
+      }
+
+      // Save UUID for Sync
+      final supabaseClient = sl<supabase.SupabaseClient>();
+      final userId = supabaseClient.auth.currentUser?.id;
+      if (userId != null) {
+        await box.put('user_id', userId);
+      }
 
       emit(
         AuthAuthenticated(
-          UserEntity(id: userData['id'], email: email, name: userName),
+          UserEntity(
+            id: userData['id'],
+            email: email,
+            name: userName,
+            photo: photoUrl,
+          ),
         ),
       );
 
-      debugPrint('✅ Google Sign-In successful: $email');
+      // Trigger sync safely without crashing Auth flow
+      CentralSyncService().syncAll().catchError((e) {
+        debugPrint('Sync Warning: $e');
+      });
+
+      debugPrint('Google Sign-In successful: $email');
     } catch (e) {
-      debugPrint('❌ Google Sign-In error: $e');
+      debugPrint('Google Sign-In error: $e');
       emit(AuthError(e.toString()));
     }
   }
@@ -109,14 +145,20 @@ class AuthCubit extends Cubit<AuthState> {
       final box = await Hive.openBox('auth');
       final isAuth = box.get('is_authenticated', defaultValue: false);
       final email = box.get('email');
-      final userName = box.get('user_name', defaultValue: 'User');
+      final userName = box.get('user_name', defaultValue: 'المستخدم');
 
       if (isAuth && email != null) {
         emit(
           AuthAuthenticated(
-            UserEntity(id: email, email: email, name: userName),
+            UserEntity(
+              id: email,
+              email: email,
+              name: userName,
+              photo: box.get('photo_url'),
+            ),
           ),
         );
+        CentralSyncService().syncAll();
       } else {
         emit(AuthUnauthenticated());
       }

@@ -70,7 +70,7 @@ class DeveloperScreen extends StatelessWidget {
                 border: Border.all(color: AppColors.royalGold, width: 3),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.royalGold.withOpacity(0.2),
+                    color: AppColors.royalGold.withValues(alpha: 0.2),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -121,9 +121,11 @@ class DeveloperScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.royalGold.withOpacity(0.1),
+                color: AppColors.royalGold.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.royalGold.withOpacity(0.3)),
+                border: Border.all(
+                  color: AppColors.royalGold.withValues(alpha: 0.3),
+                ),
               ),
               child: Text(
                 _title,
@@ -207,10 +209,10 @@ class DeveloperScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.deepSurface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -221,7 +223,7 @@ class DeveloperScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: isFontAwesome

@@ -1,22 +1,17 @@
+import 'package:finalproject/services/bill_calculator_service.dart';
+
 class TariffService {
   /// Calculates cost based on Egyptian Electricity Tariffs (2024/2025)
-  /// Returns cost in EGP
+  /// Returns Pure Energy Cost in EGP
+  /// For full bill with fees, use calculateFullBill
   static double calculateCost(double kwh) {
-    if (kwh <= 50) {
-      return kwh * 0.68;
-    } else if (kwh <= 100) {
-      return (50 * 0.68) + ((kwh - 50) * 0.78);
-    } else if (kwh <= 200) {
-      return kwh * 0.95; // Entire consumption at 95pt if > 100 but <= 200
-    } else if (kwh <= 350) {
-      return (200 * 0.95) + ((kwh - 200) * 1.55);
-    } else if (kwh <= 650) {
-      return (200 * 0.95) + (150 * 1.55) + ((kwh - 350) * 1.65);
-    } else if (kwh <= 1000) {
-      return kwh * 2.10; // Entire consumption at 210pt if > 650 but <= 1000
-    } else {
-      return kwh * 2.23; // Entire consumption at 223pt if > 1000
-    }
+    final bill = BillCalculatorService.calculateBill(kwh);
+    return bill['energy_cost'] as double;
+  }
+
+  /// Returns full bill details including fees, stamps, and official rounding
+  static Map<String, dynamic> calculateFullBill(double kwh) {
+    return BillCalculatorService.calculateBill(kwh);
   }
 
   static int getTier(double kwh) {

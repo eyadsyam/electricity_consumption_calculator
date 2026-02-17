@@ -9,6 +9,7 @@ import 'package:finalproject/screens/main_layout.dart';
 import 'sign_up_page.dart';
 import 'package:hive/hive.dart';
 import 'package:finalproject/services/google_auth_service.dart';
+import 'complete_profile_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -56,29 +57,34 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {
-            Navigator.pushReplacement(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    const MainLayout(),
-                transitionsBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                      return FadeTransition(opacity: animation, child: child);
-                    },
-                transitionDuration: const Duration(milliseconds: 600),
-              ),
-            );
-          } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message, style: GoogleFonts.cairo()),
-                backgroundColor: AppColors.error,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            // Check if name is Arabic-like, if not -> CompleteProfile
+            final name = state.user.name ?? "";
+            final isArabic = RegExp(r'[\u0600-\u06FF]').hasMatch(name);
+
+            if (!isArabic) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CompleteProfilePage(
+                    initialName: name,
+                    photoUrl: state.user.photo,
+                  ),
                 ),
-              ),
-            );
+              );
+            } else {
+              Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const MainLayout(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
+                  transitionDuration: const Duration(milliseconds: 600),
+                ),
+              );
+            }
           }
         },
         child: Container(
@@ -147,7 +153,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
-                              "مرحباً بعودتك",
+                              "مرحباً بك",
                               style: GoogleFonts.cairo(
                                 fontSize: isSmallScreen ? 26 : 32,
                                 fontWeight: FontWeight.bold,
@@ -158,7 +164,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
-                              "سجل دخول لحسابك",
+                              "سجل دخولك للمتابعة",
                               style: GoogleFonts.cairo(
                                 color: Colors.white54,
                                 fontSize: isSmallScreen ? 13 : 15,
@@ -219,7 +225,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               width: double.infinity,
                               height: isSmallScreen ? 50 : 55,
                               child: OutlinedButton(
-                                onPressed: () => _showGuestDialog(context),
+                                onPressed: () => _showGuestDialog(),
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
                                     color: AppColors.royalGold.withValues(
@@ -233,7 +239,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: Text(
-                                    "الدخول كضيف",
+                                    "الدخول كزائر",
                                     style: GoogleFonts.cairo(
                                       color: AppColors.royalGold,
                                       fontWeight: FontWeight.bold,
@@ -300,35 +306,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           final googleAuth = GoogleAuthService();
                           final userData = await googleAuth.signInWithGoogle();
 
-                          if (userData != null && mounted) {
+                          if (!mounted) return;
+
+                          if (userData != null) {
                             context.read<AuthCubit>().signInWithGoogle(
                               userData,
                             );
-
-                            Navigator.pushReplacement(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) =>
-                                        const MainLayout(),
-                                transitionsBuilder:
-                                    (
-                                      context,
-                                      animation,
-                                      secondaryAnimation,
-                                      child,
-                                    ) {
-                                      return FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      );
-                                    },
-                                transitionDuration: const Duration(
-                                  milliseconds: 600,
-                                ),
-                              ),
-                            );
-                          } else if (mounted) {
+                          } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
@@ -363,7 +347,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
                                 child: Text(
-                                  "تسجيل الدخول بواسطة Google",
+                                  "الدخول بواسطة جوجل",
                                   style: GoogleFonts.roboto(
                                     fontWeight: FontWeight.w500,
                                     fontSize: isSmallScreen ? 13 : 14,
@@ -511,7 +495,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Future<void> _showGuestDialog(BuildContext context) async {
+  Future<void> _showGuestDialog() async {
+    if (!mounted) return;
+
     final nameController = TextEditingController();
 
     final confirmed = await showDialog<bool>(

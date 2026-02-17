@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase/supabase.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
 import 'package:finalproject/features/devices/domain/entities/user_device.dart';
 import 'package:finalproject/core/di/injection.dart';
 
@@ -47,7 +47,6 @@ class SupabaseSyncService {
 
           // Mark as synced in Hive
           reading.isSynced = true;
-          reading.supabaseId = reading.id;
           await reading.save();
 
           debugPrint('✅ Synced reading: ${reading.id}');

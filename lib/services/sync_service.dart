@@ -3,7 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase/supabase.dart';
 import 'package:finalproject/core/di/injection.dart';
 import 'package:finalproject/features/devices/domain/entities/user_device.dart';
-import 'package:finalproject/features/devices/domain/entities/meter_reading.dart';
+import 'package:finalproject/features/electricity_tracking/domain/entities/meter_reading.dart';
 
 class SyncService {
   static const String _devicesBoxName = 'user_devices';
@@ -110,20 +110,8 @@ class SyncService {
         final data = reading.toJson();
         data['user_id'] = userId;
 
-        if (reading.supabaseId != null) {
-          await _supabase
-              .from('meter_readings')
-              .update(data)
-              .eq('id', reading.supabaseId!);
-        } else {
-          final response = await _supabase
-              .from('meter_readings')
-              .insert(data)
-              .select();
-          if (response.isNotEmpty) {
-            reading.supabaseId = response.first['id'];
-          }
-        }
+        // Use upsert with ID
+        await _supabase.from('meter_readings').upsert(data);
 
         reading.isSynced = true;
         await reading.save();
@@ -172,7 +160,7 @@ class SyncService {
     for (var json in response) {
       final reading = MeterReading.fromJson(json);
       final existingIndex = box.values.toList().indexWhere(
-        (r) => r.supabaseId == reading.id,
+        (r) => r.id == reading.id,
       );
 
       if (existingIndex != -1) {
