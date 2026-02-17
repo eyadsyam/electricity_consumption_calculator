@@ -1,9 +1,5 @@
 <div align="center">
-<<<<<<< HEAD
   <img src="assets/images/promo/banner.png" width="100%" alt="Electra App Banner" />
-=======
-  <img src="assets/images/promo/banner.jpg" width="100%" alt="Electra App Banner" />
->>>>>>> c7fb5ca (Final Polish: Updated README, integrated banner, and completed UI features)
 </div>
 
 # Electra - Your Smart Electricity Companion
@@ -74,11 +70,6 @@ Experience the modern design and fluid animations of Electra.
 ## 🤝 Contributing
 Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
----
-<<<<<<< HEAD
-=======
-
 <div align="center">
   Made with ❤️ for Egypt
 </div>
->>>>>>> c7fb5ca (Final Polish: Updated README, integrated banner, and completed UI features)
