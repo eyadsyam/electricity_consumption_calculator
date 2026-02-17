@@ -1,75 +1,66 @@
-# ⚡ Electra - Electricity Consumption Manager
+<div align="center">
+  <img src="assets/images/promo/banner.png" width="100%" alt="Electra App Banner" />
+</div>
 
-[![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
-[![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+# Electra - Your Smart Electricity Companion
 
-**Electra** is a premium, high-performance mobile application designed to simplify electricity consumption management in Egypt. It provides smart tracking, real-time bill estimation based on current tariffs, and intelligent budget alerts.
-
----
-
-## ✨ Key Features
-
-| Feature | Description |
-| :--- | :--- |
-| **📊 Smart Tracking** | Log meter readings and visualize your energy usage trends. |
-| **💰 Bill Estimation** | Accurate calculations using the latest Egyptian electricity tariffs for 2024/2025. |
-| **🔌 Device Inventory** | Add household appliances and estimate their individual consumption impact. |
-| **🔔 Intelligent Alerts** | Stay notified! Get reminders for reading dates and alerts when reaching budget limits. |
-| **🌙 Premium Dark UI** | A sleek, modern design with a focused dark mode and Royal Gold accents. |
-| **📜 History Log** | Access old readings and notifications history anytime. |
+## 🚀 Key Features
+*   **Smart Tariff Calculation**: Automatically calculates your electricity bill based on the official Egyptian tariff tiers (2024/2025).
+*   **Consumption History**: detailed records of your monthly usage, costs, and consumption patterns over time.
+*   **Device Management**: Estimate power consumption for specific appliances (AC, Fridge, TV) to identify energy hogs.
+*   **Cloud Sync**: Sign in with **Google** to securely backup your data using **Supabase**.
+*   **Offline-First**: Works perfectly without internet for core features using a local **Hive** database.
+*   **Smart Analysis**: Visual charts and insights to help you understand your consumption trends.
+*   **Budget Alerts**: Set monthly spending limits and receive notifications when you're close to exceeding them.
+*   **Dark Mode**: A premium, battery-saving dark UI designed for modern devices.
 
 ---
 
-## 📸 App Preview
-
-<p align="center">
-  <img src="assets/images/screenshots/home_screen.jpeg" width="30%" alt="Home Screen">
-  <img src="assets/images/screenshots/analysis_screen.jpeg" width="30%" alt="Analysis Screen">
-  <img src="assets/images/screenshots/add_reading_screen.jpeg" width="30%" alt="Add Reading Screen">
-</p>
-
-<p align="center">
-  <img src="assets/images/screenshots/history_screen.jpeg" width="30%" alt="History Screen">
-  <img src="assets/images/screenshots/add_device_screen.jpeg" width="30%" alt="Add Device Screen">
-  <img src="assets/images/screenshots/profile_screen.jpeg" width="30%" alt="Profile Screen">
-</p>
+## 🛠️ Technology Stack
+*   **Frontend**: Flutter & Dart.
+*   **State Management**: `flutter_bloc` (Cubit pattern) & `get_it` for Dependency Injection.
+*   **Backend & Auth**: **Supabase** (PostgreSQL, Auth, Realtime).
+*   **Local Database**: **Hive** (NoSQL key-value database) for fast, offline-first storage.
+*   **Animations**: `animate_do` for smooth UI transitions.
+*   **Charts**: `fl_chart` for consumption analysis visualization.
+*   **Typography**: `google_fonts` (Cairo & Outfit) for modern Arabic/English support.
 
 ---
 
-## 🛠️ Tech Stack
+## 📱 App Screenshots
+Experience the modern design and fluid animations of Electra.
 
-*   **UI Framework:** [Flutter](https://flutter.dev) (v3+)
-*   **Language:** [Dart](https://dart.dev)
-*   **Local Storage:** [Hive](https://pub.dev/packages/hive) (High-performance NoSQL)
-*   **State Management:** [Flutter Bloc/Cubit](https://pub.dev/packages/flutter_bloc)
-*   **Animations:** [Animate Do](https://pub.dev/packages/animate_do)
-*   **Notifications:** [Flutter Local Notifications](https://pub.dev/packages/flutter_local_notifications)
+<div align="center">
+  <table>
+    <tr>
+      <td align="center"><img src="assets/images/screenshots/home_screen.jpeg" width="250" /><br /><b>Home Screen</b></td>
+      <td align="center"><img src="assets/images/screenshots/add_reading_screen.jpeg" width="250" /><br /><b>Add New Reading</b></td>
+      <td align="center"><img src="assets/images/screenshots/history_screen.jpeg" width="250" /><br /><b>Consumption History</b></td>
+    </tr>
+    <tr>
+      <td align="center"><img src="assets/images/screenshots/analysis_screen.jpeg" width="250" /><br /><b>Usage Analysis</b></td>
+      <td align="center"><img src="assets/images/screenshots/add_device_screen.jpeg" width="250" /><br /><b>Device Management</b></td>
+      <td align="center"><img src="assets/images/screenshots/profile_screen.jpeg" width="250" /><br /><b>User Profile</b></td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-## 🚦 Getting Started
-
-### Prerequisites
-
-*   Flutter SDK installed on your machine.
-*   Android Studio / VS Code with Flutter extension.
-*   An Android/iOS emulator or physical device.
-
-### Installation
-
-1.  **Clone the repo:**
+## 🏁 Getting Started
+1.  **Clone the repository**:
     ```bash
     git clone https://github.com/eyadsyam/electricity_consumption_calculator.git
-    cd electricity_consumption_calculator
     ```
-
-2.  **Install dependencies:**
+2.  **Install dependencies**:
     ```bash
     flutter pub get
     ```
-
-3.  **Run the application:**
+3.  **Generate Database Code** (if applicable):
+    ```bash
+    dart run build_runner build
+    ```
+4.  **Run the app**:
     ```bash
     flutter run
     ```
@@ -77,27 +68,6 @@
 ---
 
 ## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
 
 ---
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## 📞 Contact
-
-Eyad Syam - [GitHub Profile](https://github.com/eyadsyam)
-
----
-
-<p align="center">
-  Built with ❤️ for a smarter consumption.
-</p>
