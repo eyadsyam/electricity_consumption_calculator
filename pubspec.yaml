@@ -83,7 +83,7 @@ flutter_launcher_icons:
     generate: true
     image_path: "assets/images/app_logo_elegant.png"
     background_color: "#121212"
-    theme_color: "#D4AF37"
+    theme_color: "#0D47A1"
   windows:
     generate: true
     image_path: "assets/images/app_logo_elegant.png"
