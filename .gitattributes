@@ -1,0 +1,23 @@
+# Hide auto-generated platform files from GitHub language stats
+# Only Dart and SQL should appear
+
+# C++ (Windows/Linux generated plugin files)
+windows/** linguist-vendored
+linux/** linguist-vendored
+
+# Swift (iOS/macOS generated files)
+ios/** linguist-vendored
+macos/** linguist-vendored
+
+# CMake
+*.cmake linguist-vendored
+CMakeLists.txt linguist-vendored
+
+# HTML
+*.html linguist-vendored
+
+# Android (Java/Kotlin/Groovy generated files)
+android/** linguist-vendored
+
+# Web generated files
+web/** linguist-vendored
