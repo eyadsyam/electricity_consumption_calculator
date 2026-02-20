@@ -48,7 +48,7 @@ class DeveloperScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.royalGold),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.electricBlue),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -61,16 +61,16 @@ class DeveloperScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         child: Column(
           children: [
-            // Developer Image with Gold Border
+            // Developer Image with Electric Blue Border
             Container(
               width: 160,
               height: 160,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.royalGold, width: 3),
+                border: Border.all(color: AppColors.electricBlue, width: 3),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.royalGold.withValues(alpha: 0.2),
+                    color: AppColors.electricBlue.withValues(alpha: 0.2),
                     blurRadius: 20,
                     spreadRadius: 5,
                   ),
@@ -121,16 +121,16 @@ class DeveloperScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.royalGold.withValues(alpha: 0.1),
+                color: AppColors.electricBlue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: AppColors.royalGold.withValues(alpha: 0.3),
+                  color: AppColors.electricBlue.withValues(alpha: 0.3),
                 ),
               ),
               child: Text(
                 _title,
                 style: GoogleFonts.outfit(
-                  color: AppColors.royalGold,
+                  color: AppColors.electricBlue,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 1,
@@ -176,7 +176,7 @@ class DeveloperScreen extends StatelessWidget {
               title: 'Email',
               subtitle: _email,
               onTap: _launchEmail,
-              color: AppColors.royalGold,
+              color: AppColors.electricBlue,
               isFontAwesome: false,
             ),
 

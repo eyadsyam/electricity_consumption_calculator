@@ -27,7 +27,7 @@ class PermissionService {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            const Icon(Icons.security, color: AppColors.royalGold),
+            const Icon(Icons.security, color: AppColors.electricBlue),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -80,7 +80,7 @@ class PermissionService {
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.royalGold,
+              backgroundColor: AppColors.electricBlue,
               foregroundColor: Colors.black,
             ),
             child: Text(
@@ -135,10 +135,10 @@ class PermissionService {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.royalGold.withValues(alpha: 0.1),
+            color: AppColors.electricBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: AppColors.royalGold, size: 20),
+          child: Icon(icon, color: AppColors.electricBlue, size: 20),
         ),
         const SizedBox(width: 12),
         Expanded(

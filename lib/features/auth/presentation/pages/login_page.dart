@@ -126,7 +126,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             child: Text(
                               'Electra',
                               style: GoogleFonts.montserrat(
-                                color: AppColors.royalGold,
+                                color: AppColors.electricBlue,
                                 fontSize: isSmallScreen ? 24 : 32,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 2,
@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                               style: GoogleFonts.cairo(
                                 fontSize: isSmallScreen ? 26 : 32,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.royalGold,
+                                color: AppColors.electricBlue,
                               ),
                             ),
                           ),
@@ -228,7 +228,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                 onPressed: () => _showGuestDialog(),
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
-                                    color: AppColors.royalGold.withValues(
+                                    color: AppColors.electricBlue.withValues(
                                       alpha: 0.5,
                                     ),
                                   ),
@@ -241,7 +241,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                   child: Text(
                                     "الدخول كزائر",
                                     style: GoogleFonts.cairo(
-                                      color: AppColors.royalGold,
+                                      color: AppColors.electricBlue,
                                       fontWeight: FontWeight.bold,
                                       fontSize: isSmallScreen ? 14 : 16,
                                     ),
@@ -261,7 +261,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                         child: Text(
                           "نسيت كلمة المرور؟",
                           style: GoogleFonts.cairo(
-                            color: AppColors.royalGold.withValues(alpha: 0.7),
+                            color: AppColors.electricBlue.withValues(alpha: 0.7),
                             fontSize: isSmallScreen ? 13 : 14,
                           ),
                         ),
@@ -306,7 +306,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           final googleAuth = GoogleAuthService();
                           final userData = await googleAuth.signInWithGoogle();
 
-                          if (!mounted) return;
+                          if (!context.mounted) return;
 
                           if (userData != null) {
                             context.read<AuthCubit>().signInWithGoogle(
@@ -397,14 +397,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           );
                         },
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.royalGold),
+                          side: const BorderSide(color: AppColors.electricBlue),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
                         icon: Icon(
                           Icons.person_add,
-                          color: AppColors.royalGold,
+                          color: AppColors.electricBlue,
                           size: isSmallScreen ? 20 : 24,
                         ),
                         label: FittedBox(
@@ -412,7 +412,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           child: Text(
                             "إنشاء حساب جديد",
                             style: GoogleFonts.cairo(
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                               fontWeight: FontWeight.bold,
                               fontSize: isSmallScreen ? 14 : 16,
                             ),
@@ -442,10 +442,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         color: AppColors.deepSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.royalGold.withValues(alpha: 0.1)),
+        border: Border.all(color: AppColors.electricBlue.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.royalGold.withValues(alpha: 0.05),
+            color: AppColors.electricBlue.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -466,7 +466,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           ),
           prefixIcon: Icon(
             icon,
-            color: AppColors.royalGold,
+            color: AppColors.electricBlue,
             size: isSmallScreen ? 20 : 24,
           ),
           suffixIcon: isPassword
@@ -475,7 +475,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     _isPasswordVisible
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
-                    color: AppColors.royalGold.withValues(alpha: 0.7),
+                    color: AppColors.electricBlue.withValues(alpha: 0.7),
                     size: isSmallScreen ? 20 : 24,
                   ),
                   onPressed: () {
@@ -531,7 +531,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 ),
                 prefixIcon: const Icon(
                   Icons.person,
-                  color: AppColors.royalGold,
+                  color: AppColors.electricBlue,
                 ),
               ),
             ),
@@ -548,7 +548,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.royalGold,
+              backgroundColor: AppColors.electricBlue,
               foregroundColor: Colors.black,
             ),
             child: Text('متابعة', style: GoogleFonts.cairo()),

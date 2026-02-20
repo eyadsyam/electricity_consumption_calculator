@@ -90,7 +90,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             width: 2,
                           ),
                         ),
@@ -123,7 +123,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: const BoxDecoration(
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
@@ -142,7 +142,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     style: GoogleFonts.cairo(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.royalGold,
+                      color: AppColors.electricBlue,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -173,24 +173,24 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: BorderSide(
-                          color: AppColors.royalGold.withValues(alpha: 0.3),
+                          color: AppColors.electricBlue.withValues(alpha: 0.3),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: BorderSide(
-                          color: AppColors.royalGold.withValues(alpha: 0.3),
+                          color: AppColors.electricBlue.withValues(alpha: 0.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(
-                          color: AppColors.royalGold,
+                          color: AppColors.electricBlue,
                         ),
                       ),
                       prefixIcon: const Icon(
                         Icons.person,
-                        color: AppColors.royalGold,
+                        color: AppColors.electricBlue,
                       ),
                     ),
                     validator: (val) {
@@ -207,7 +207,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     child: ElevatedButton(
                       onPressed: _saveAndContinue,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.royalGold,
+                        backgroundColor: AppColors.electricBlue,
                         foregroundColor: Colors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),

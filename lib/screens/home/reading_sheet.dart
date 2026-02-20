@@ -143,7 +143,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
             'تم الحفظ - التكلفة: ${_estimatedCost?.toStringAsFixed(2)} جنيه',
             style: GoogleFonts.cairo(),
           ),
-          backgroundColor: AppColors.royalGold,
+          backgroundColor: AppColors.electricBlue,
         ),
       );
     } catch (e) {
@@ -184,7 +184,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
             Text(
               "تسجيل قراءة جديدة",
               style: GoogleFonts.cairo(
-                color: AppColors.royalGold,
+                color: AppColors.electricBlue,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
@@ -206,7 +206,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
                 hintText: "القراءة الحالية",
                 hintStyle: const TextStyle(color: Colors.white12),
                 suffixText: "كيلووات",
-                suffixStyle: const TextStyle(color: AppColors.royalGold),
+                suffixStyle: const TextStyle(color: AppColors.electricBlue),
               ),
             ),
             if (_consumption != null && _estimatedCost != null) ...[
@@ -217,7 +217,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
                   color: AppColors.bgBlack,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.royalGold.withValues(alpha: 0.3),
+                    color: AppColors.electricBlue.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Column(
@@ -235,7 +235,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
                         Text(
                           '${_consumption!.toStringAsFixed(0)} كيلووات',
                           style: GoogleFonts.cairo(
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -256,7 +256,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
                         Text(
                           '${_estimatedCost!.toStringAsFixed(2)} جنيه',
                           style: GoogleFonts.cairo(
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
@@ -274,7 +274,7 @@ class _AddReadingSheetState extends State<AddReadingSheet> {
               child: ElevatedButton(
                 onPressed: _saveReading,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.royalGold,
+                  backgroundColor: AppColors.electricBlue,
                   foregroundColor: Colors.black,
                 ),
                 child: Text(

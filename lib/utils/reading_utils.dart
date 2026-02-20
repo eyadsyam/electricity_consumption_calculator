@@ -76,7 +76,7 @@ class ReadingUtils {
               ListTile(
                 leading: const Icon(
                   Icons.camera_alt,
-                  color: AppColors.royalGold,
+                  color: AppColors.electricBlue,
                 ),
                 title: const Text('Camera'),
                 onTap: () => Navigator.pop(context, ImageSource.camera),
@@ -84,7 +84,7 @@ class ReadingUtils {
               ListTile(
                 leading: const Icon(
                   Icons.photo_library,
-                  color: AppColors.royalGold,
+                  color: AppColors.electricBlue,
                 ),
                 title: const Text('Gallery'),
                 onTap: () => Navigator.pop(context, ImageSource.gallery),

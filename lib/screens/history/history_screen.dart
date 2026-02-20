@@ -60,7 +60,7 @@ class HistoryPage extends StatelessWidget {
                     Text(
                       "سجل القراءات",
                       style: GoogleFonts.cairo(
-                        color: AppColors.royalGold,
+                        color: AppColors.electricBlue,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
@@ -222,7 +222,7 @@ class HistoryPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('تم حذف القراءة بنجاح', style: GoogleFonts.cairo()),
-            backgroundColor: AppColors.royalGold,
+            backgroundColor: AppColors.electricBlue,
           ),
         );
       },
@@ -232,7 +232,7 @@ class HistoryPage extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.deepSurface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.royalGold.withValues(alpha: 0.1)),
+          border: Border.all(color: AppColors.electricBlue.withValues(alpha: 0.1)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,10 +242,10 @@ class HistoryPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.royalGold.withValues(alpha: 0.1),
+                    color: AppColors.electricBlue.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.electric_meter, color: AppColors.royalGold),
+                  child: Icon(Icons.electric_meter, color: AppColors.electricBlue),
                 ),
                 const SizedBox(width: 20),
                 Expanded(
@@ -276,7 +276,7 @@ class HistoryPage extends StatelessWidget {
                     Text(
                       "${reading.estimatedCost?.toStringAsFixed(2) ?? '0.00'} جنيه",
                       style: GoogleFonts.cairo(
-                        color: AppColors.royalGold,
+                        color: AppColors.electricBlue,
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),

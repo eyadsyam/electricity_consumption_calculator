@@ -76,7 +76,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
             ),
             title: Row(
               children: [
-                Icon(_getIcon(data.icon), color: AppColors.royalGold),
+                Icon(_getIcon(data.icon), color: AppColors.electricBlue),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -116,7 +116,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
                         Text(
                           "${data.avgWatts.toInt()} وات",
                           style: GoogleFonts.outfit(
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -145,7 +145,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
                       ),
                       prefixIcon: const Icon(
                         Icons.format_list_numbered,
-                        color: AppColors.royalGold,
+                        color: AppColors.electricBlue,
                       ),
                     ),
                   ),
@@ -174,7 +174,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
                       ),
                       prefixIcon: const Icon(
                         Icons.access_time,
-                        color: AppColors.royalGold,
+                        color: AppColors.electricBlue,
                       ),
                     ),
                   ),
@@ -254,14 +254,14 @@ class _AddDevicePageState extends State<AddDevicePage> {
                           style: GoogleFonts.cairo(),
                           textAlign: TextAlign.right,
                         ),
-                        backgroundColor: AppColors.royalGold,
+                        backgroundColor: AppColors.electricBlue,
                         duration: const Duration(seconds: 4),
                       ),
                     );
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.royalGold,
+                  backgroundColor: AppColors.electricBlue,
                   foregroundColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -298,7 +298,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
         Text(
           value,
           style: GoogleFonts.outfit(
-            color: isHighlight ? AppColors.royalGold : Colors.white,
+            color: isHighlight ? AppColors.electricBlue : Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: isHighlight ? 16 : 14,
           ),
@@ -317,7 +317,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
         ),
         centerTitle: true,
         backgroundColor: AppColors.bgBlack,
-        iconTheme: const IconThemeData(color: AppColors.royalGold),
+        iconTheme: const IconThemeData(color: AppColors.electricBlue),
       ),
       body: Container(
         decoration: const BoxDecoration(color: AppColors.bgBlack),
@@ -360,7 +360,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
                 hintStyle: GoogleFonts.cairo(color: Colors.white38),
                 prefixIcon: const Icon(
                   Icons.search,
-                  color: AppColors.royalGold,
+                  color: AppColors.electricBlue,
                 ),
                 filled: true,
                 fillColor: AppColors.deepSurface,
@@ -391,7 +391,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
             child: Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: AppColors.royalGold,
+                color: AppColors.electricBlue,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(Icons.qr_code_scanner, color: Colors.black),
@@ -411,16 +411,16 @@ class _AddDevicePageState extends State<AddDevicePage> {
       decoration: BoxDecoration(
         color: AppColors.deepSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.royalGold.withValues(alpha: 0.1)),
+        border: Border.all(color: AppColors.electricBlue.withValues(alpha: 0.1)),
       ),
       child: ListTile(
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.royalGold.withValues(alpha: 0.1),
+            color: AppColors.electricBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(_getIcon(data.icon), color: AppColors.royalGold),
+          child: Icon(_getIcon(data.icon), color: AppColors.electricBlue),
         ),
         title: Text(
           name,
@@ -434,7 +434,7 @@ class _AddDevicePageState extends State<AddDevicePage> {
           style: GoogleFonts.cairo(color: Colors.white38, fontSize: 12),
         ),
         trailing: IconButton(
-          icon: const Icon(Icons.add_circle, color: AppColors.royalGold),
+          icon: const Icon(Icons.add_circle, color: AppColors.electricBlue),
           onPressed: () => _addDevice(name, data),
         ),
       ),
@@ -444,10 +444,12 @@ class _AddDevicePageState extends State<AddDevicePage> {
   String _translateCategory(String category) {
     final lower = category.toLowerCase();
     if (lower.contains('tv') || lower.contains('television')) return 'تلفزيون';
-    if (lower.contains('fridge') || lower.contains('refrigerator'))
+    if (lower.contains('fridge') || lower.contains('refrigerator')) {
       return 'ثلاجة';
-    if (lower.contains('ac') || lower.contains('air conditioner'))
+    }
+    if (lower.contains('ac') || lower.contains('air conditioner')) {
       return 'تكييف';
+    }
     if (lower.contains('microwave')) return 'ميكروويف';
     if (lower.contains('oven')) return 'فرن كهربائي';
     if (lower.contains('washing') || lower.contains('washer')) return 'غسالة';
@@ -458,10 +460,12 @@ class _AddDevicePageState extends State<AddDevicePage> {
     if (lower.contains('fan')) return 'مروحة';
     if (lower.contains('pc') ||
         lower.contains('laptop') ||
-        lower.contains('computer'))
+        lower.contains('computer')) {
       return 'كمبيوتر / لابتوب';
-    if (lower.contains('light') || lower.contains('lamp'))
+    }
+    if (lower.contains('light') || lower.contains('lamp')) {
       return 'إضاءة / لمبة';
+    }
     if (lower.contains('router')) return 'راوتر';
     if (lower.contains('pump')) return 'موتور مياه';
 

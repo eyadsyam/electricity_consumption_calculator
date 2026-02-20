@@ -118,7 +118,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                           child: Text(
                             'Electra',
                             style: GoogleFonts.montserrat(
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                               fontSize: isSmallScreen ? 20 : 28,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 2,
@@ -155,8 +155,8 @@ class _OnboardingPageState extends State<OnboardingPage>
                             height: isSmallScreen ? 8 : 10,
                             decoration: BoxDecoration(
                               color: _currentPage == index
-                                  ? AppColors.royalGold
-                                  : AppColors.royalGold.withValues(alpha: 0.3),
+                                  ? AppColors.electricBlue
+                                  : AppColors.electricBlue.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(5),
                             ),
                           ),
@@ -176,7 +176,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.royalGold,
+                          backgroundColor: AppColors.electricBlue,
                           foregroundColor: Colors.black,
                           padding: EdgeInsets.symmetric(
                             horizontal: isSmallScreen ? 24 : 32,
@@ -227,7 +227,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                       child: Text(
                         'تخطي',
                         style: GoogleFonts.cairo(
-                          color: AppColors.royalGold.withValues(alpha: 0.7),
+                          color: AppColors.electricBlue.withValues(alpha: 0.7),
                           fontSize: isSmallScreen ? 13 : 14,
                         ),
                       ),
@@ -263,7 +263,7 @@ class _OnboardingPageState extends State<OnboardingPage>
               style: GoogleFonts.cairo(
                 fontSize: isSmallScreen ? 24 : 32,
                 fontWeight: FontWeight.bold,
-                color: AppColors.royalGold,
+                color: AppColors.electricBlue,
               ),
               textAlign: TextAlign.center,
             ),

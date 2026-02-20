@@ -55,17 +55,17 @@ class _MainLayoutState extends State<MainLayout> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: GNav(
-              rippleColor: AppColors.royalGold.withValues(alpha: 0.2),
-              hoverColor: AppColors.royalGold.withValues(alpha: 0.1),
+              rippleColor: AppColors.electricBlue.withValues(alpha: 0.2),
+              hoverColor: AppColors.electricBlue.withValues(alpha: 0.1),
               haptic: true,
               tabBorderRadius: 20,
               curve: Curves.easeOutExpo,
               duration: const Duration(milliseconds: 400),
               gap: 8,
               color: AppColors.navUnselected,
-              activeColor: AppColors.royalGold,
+              activeColor: AppColors.electricBlue,
               iconSize: 24,
-              tabBackgroundColor: AppColors.royalGold.withValues(alpha: 0.1),
+              tabBackgroundColor: AppColors.electricBlue.withValues(alpha: 0.1),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               tabs: const [
                 GButton(icon: Icons.dashboard_outlined, text: 'الرئيسية'),

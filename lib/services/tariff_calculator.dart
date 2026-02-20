@@ -261,7 +261,7 @@ class TariffCalculator {
       case 'الشريحة السابعة':
         return 0xFF9C27B0; // Purple
       default:
-        return 0xFFD4AF37; // Gold
+        return 0xFF0D47A1; // Dark Electric Blue
     }
   }
 

@@ -25,7 +25,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
         ),
         centerTitle: true,
         backgroundColor: AppColors.bgBlack,
-        iconTheme: const IconThemeData(color: AppColors.royalGold),
+        iconTheme: const IconThemeData(color: AppColors.electricBlue),
       ),
       body: Stack(
         children: [
@@ -45,7 +45,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
                   final product = await _apiService.fetchProductByBarcode(
                     barcode.rawValue!,
                   );
-                  if (!mounted) return;
+                  if (!context.mounted) return;
                   Navigator.pop(context, product);
                 }
               }
@@ -58,7 +58,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
               width: 250,
               height: 250,
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.royalGold, width: 2),
+                border: Border.all(color: AppColors.electricBlue, width: 2),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -66,7 +66,7 @@ class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
 
           if (_isProcessing)
             const Center(
-              child: CircularProgressIndicator(color: AppColors.royalGold),
+              child: CircularProgressIndicator(color: AppColors.electricBlue),
             ),
 
           Positioned(

@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            const Icon(Icons.edit, color: AppColors.royalGold),
+            const Icon(Icons.edit, color: AppColors.electricBlue),
             const SizedBox(width: 10),
             Text(
               'تعديل الملف الشخصي',
@@ -75,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 prefixIcon: const Icon(
                   Icons.person,
-                  color: AppColors.royalGold,
+                  color: AppColors.electricBlue,
                 ),
               ),
             ),
@@ -96,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 final box = await Hive.openBox('auth');
                 await box.put('user_name', newName);
                 setState(() => userName = newName);
-                Navigator.pop(ctx);
+                if (ctx.mounted) Navigator.pop(ctx);
 
                 if (!mounted) return;
 
@@ -106,13 +106,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       'تم تحديث الاسم بنجاح',
                       style: GoogleFonts.cairo(),
                     ),
-                    backgroundColor: AppColors.royalGold,
+                    backgroundColor: AppColors.electricBlue,
                   ),
                 );
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.royalGold,
+              backgroundColor: AppColors.electricBlue,
               foregroundColor: Colors.black,
             ),
             child: Text('حفظ', style: GoogleFonts.cairo()),
@@ -147,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage> {
               'تم تحديث الصورة الشخصية بنجاح',
               style: GoogleFonts.cairo(),
             ),
-            backgroundColor: AppColors.royalGold,
+            backgroundColor: AppColors.electricBlue,
           ),
         );
       }
@@ -170,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             const Icon(
               Icons.account_balance_wallet,
-              color: AppColors.royalGold,
+              color: AppColors.electricBlue,
             ),
             const SizedBox(width: 10),
             Text(
@@ -201,8 +201,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   borderSide: BorderSide.none,
                 ),
                 suffixText: 'جنيه',
-                suffixStyle: GoogleFonts.cairo(color: AppColors.royalGold),
-                prefixIcon: const Icon(Icons.money, color: AppColors.royalGold),
+                suffixStyle: GoogleFonts.cairo(color: AppColors.electricBlue),
+                prefixIcon: const Icon(Icons.money, color: AppColors.electricBlue),
               ),
             ),
           ],
@@ -212,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
             TextButton(
               onPressed: () async {
                 await settingsBox.delete('monthly_budget');
-                Navigator.pop(ctx);
+                if (ctx.mounted) Navigator.pop(ctx);
                 if (!mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -220,7 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       'تم إزالة الميزانية',
                       style: GoogleFonts.cairo(),
                     ),
-                    backgroundColor: AppColors.royalGold,
+                    backgroundColor: AppColors.electricBlue,
                   ),
                 );
               },
@@ -238,7 +238,9 @@ class _ProfilePageState extends State<ProfilePage> {
               final value = double.tryParse(controller.text);
               if (value != null && value > 0) {
                 await settingsBox.put('monthly_budget', value);
-                Navigator.pop(ctx);
+                if (ctx.mounted) Navigator.pop(ctx);
+
+                if (!mounted) return;
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -246,13 +248,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       'تم تحديد الميزانية: ${value.toStringAsFixed(0)} جنيه',
                       style: GoogleFonts.cairo(),
                     ),
-                    backgroundColor: AppColors.royalGold,
+                    backgroundColor: AppColors.electricBlue,
                   ),
                 );
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.royalGold,
+              backgroundColor: AppColors.electricBlue,
               foregroundColor: Colors.black,
             ),
             child: Text('حفظ', style: GoogleFonts.cairo()),
@@ -270,7 +272,7 @@ class _ProfilePageState extends State<ProfilePage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            const Icon(Icons.help, color: AppColors.royalGold),
+            const Icon(Icons.help, color: AppColors.electricBlue),
             const SizedBox(width: 10),
             Text(
               'المساعدة والدعم',
@@ -308,7 +310,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               'إغلاق',
-              style: GoogleFonts.cairo(color: AppColors.royalGold),
+              style: GoogleFonts.cairo(color: AppColors.electricBlue),
             ),
           ),
         ],
@@ -388,8 +390,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    AppColors.royalGold,
-                                    AppColors.royalGold.withValues(alpha: 0.7),
+                                    AppColors.electricBlue,
+                                    AppColors.electricBlue.withValues(alpha: 0.7),
                                   ],
                                 ),
                                 shape: BoxShape.circle,
@@ -417,7 +419,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         style: GoogleFonts.outfit(
                                           fontSize: 48,
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.royalGold,
+                                          color: AppColors.electricBlue,
                                         ),
                                       )
                                     : null,
@@ -425,7 +427,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             FloatingActionButton.small(
                               onPressed: _pickImage,
-                              backgroundColor: AppColors.royalGold,
+                              backgroundColor: AppColors.electricBlue,
                               child: const Icon(
                                 Icons.edit,
                                 color: Colors.black,
@@ -458,7 +460,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: const Icon(
                                     Icons.edit_outlined,
-                                    color: AppColors.royalGold,
+                                    color: AppColors.electricBlue,
                                     size: 20,
                                   ),
                                 ),
@@ -469,7 +471,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             Text(
                               userEmail,
                               style: GoogleFonts.cairo(
-                                color: AppColors.royalGold,
+                                color: AppColors.electricBlue,
                                 fontSize: 13,
                               ),
                             ),
@@ -481,7 +483,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.royalGold.withValues(
+                                color: AppColors.electricBlue.withValues(
                                   alpha: 0.2,
                                 ),
                                 borderRadius: BorderRadius.circular(20),
@@ -489,7 +491,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: Text(
                                 'وضع الضيف',
                                 style: GoogleFonts.cairo(
-                                  color: AppColors.royalGold,
+                                  color: AppColors.electricBlue,
                                   fontSize: 11,
                                 ),
                               ),
@@ -566,10 +568,10 @@ class _ProfilePageState extends State<ProfilePage> {
           leading: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.royalGold.withValues(alpha: 0.1),
+              color: AppColors.electricBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: AppColors.royalGold, size: 24),
+            child: Icon(icon, color: AppColors.electricBlue, size: 24),
           ),
           title: Text(
             title,
@@ -603,7 +605,7 @@ class _HelpItem extends StatelessWidget {
         Text(
           question,
           style: GoogleFonts.cairo(
-            color: AppColors.royalGold,
+            color: AppColors.electricBlue,
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),

@@ -33,7 +33,7 @@ class ChartPage extends StatelessWidget {
                     Text(
                       "التحليلات",
                       style: GoogleFonts.cairo(
-                        color: AppColors.royalGold,
+                        color: AppColors.electricBlue,
                         fontWeight: FontWeight.bold,
                         fontSize: 24,
                       ),
@@ -213,14 +213,14 @@ class ChartPage extends StatelessWidget {
                     LineChartBarData(
                       spots: spots,
                       isCurved: true,
-                      color: AppColors.royalGold,
+                      color: AppColors.electricBlue,
                       barWidth: 3,
                       dotData: FlDotData(
                         show: true,
                         getDotPainter: (spot, percent, barData, index) {
                           return FlDotCirclePainter(
                             radius: 4,
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             strokeWidth: 2,
                             strokeColor: AppColors.bgBlack,
                           );
@@ -230,7 +230,7 @@ class ChartPage extends StatelessWidget {
                         show: true,
                         gradient: LinearGradient(
                           colors: [
-                            AppColors.royalGold.withValues(alpha: 0.3),
+                            AppColors.electricBlue.withValues(alpha: 0.3),
                             Colors.transparent,
                           ],
                           begin: Alignment.topCenter,
@@ -291,7 +291,7 @@ class ChartPage extends StatelessWidget {
             Text(
               val,
               style: GoogleFonts.cairo(
-                color: AppColors.royalGold,
+                color: AppColors.electricBlue,
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
@@ -377,10 +377,10 @@ class ChartPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: AppColors.royalGold.withValues(alpha: 0.1),
+            color: AppColors.electricBlue.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: AppColors.royalGold, size: 20),
+          child: Icon(icon, color: AppColors.electricBlue, size: 20),
         ),
         const SizedBox(width: 15),
         Expanded(
@@ -392,7 +392,7 @@ class ChartPage extends StatelessWidget {
         Text(
           value,
           style: GoogleFonts.cairo(
-            color: AppColors.royalGold,
+            color: AppColors.electricBlue,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),

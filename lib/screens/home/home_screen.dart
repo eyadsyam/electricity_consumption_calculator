@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
-            Icon(Icons.account_balance_wallet, color: AppColors.royalGold),
+            Icon(Icons.account_balance_wallet, color: AppColors.electricBlue),
             SizedBox(width: 10),
             Text(
               'تحديد الميزانية الشهرية',
@@ -120,8 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderSide: BorderSide.none,
                 ),
                 suffixText: 'جنيه',
-                suffixStyle: GoogleFonts.cairo(color: AppColors.royalGold),
-                prefixIcon: Icon(Icons.money, color: AppColors.royalGold),
+                suffixStyle: GoogleFonts.cairo(color: AppColors.electricBlue),
+                prefixIcon: Icon(Icons.money, color: AppColors.electricBlue),
               ),
             ),
           ],
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final box = Hive.box('app_settings');
                 await box.delete('monthly_budget');
                 setState(() => monthlyBudget = null);
-                Navigator.pop(ctx);
+                if (ctx.mounted) Navigator.pop(ctx);
               },
               child: Text('إزالة', style: GoogleFonts.cairo(color: Colors.red)),
             ),
@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 final box = Hive.box('app_settings');
                 await box.put('monthly_budget', value);
                 setState(() => monthlyBudget = value);
-                Navigator.pop(ctx);
+                if (ctx.mounted) Navigator.pop(ctx);
 
                 if (!context.mounted) return;
 
@@ -161,13 +161,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       'تم تحديد الميزانية: ${value.toStringAsFixed(0)} جنيه',
                       style: GoogleFonts.cairo(),
                     ),
-                    backgroundColor: AppColors.royalGold,
+                    backgroundColor: AppColors.electricBlue,
                   ),
                 );
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.royalGold,
+              backgroundColor: AppColors.electricBlue,
               foregroundColor: Colors.black,
             ),
             child: Text('حفظ', style: GoogleFonts.cairo()),
@@ -215,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           child: const Text(
                             "عرض الكل",
-                            style: TextStyle(color: AppColors.royalGold),
+                            style: TextStyle(color: AppColors.electricBlue),
                           ),
                         ),
                       ],
@@ -260,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   "Electra",
                   style: GoogleFonts.outfit(
-                    color: AppColors.royalGold,
+                    color: AppColors.electricBlue,
                     fontWeight: FontWeight.bold,
                     fontSize: 22, // Slightly larger text
                   ),
@@ -289,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
         IconButton(
           icon: const Icon(
             Icons.notifications_outlined,
-            color: AppColors.royalGold,
+            color: AppColors.electricBlue,
           ),
           onPressed: () => Navigator.push(
             context,
@@ -317,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? LinearGradient(
                   colors: [Colors.grey.shade800, Colors.grey.shade700],
                 )
-              : AppTheme.luxuryGoldGradient,
+              : AppTheme.luxuryBlueGradient,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
@@ -325,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Colors.red.withValues(alpha: 0.4)
                   : readingsCount == 0
                   ? Colors.black26
-                  : AppColors.royalGold.withValues(alpha: 0.3),
+                  : AppColors.electricBlue.withValues(alpha: 0.3),
               blurRadius: 30,
               offset: const Offset(0, 15),
             ),
@@ -479,7 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _loadUserData();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.royalGold,
+            backgroundColor: AppColors.electricBlue,
             foregroundColor: Colors.black,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -522,12 +522,12 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: AppColors.royalGold.withValues(alpha: 0.1),
+                color: AppColors.electricBlue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Icon(
                 Icons.trending_up,
-                color: AppColors.royalGold,
+                color: AppColors.electricBlue,
                 size: 30,
               ),
             ),
@@ -539,7 +539,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     currentTier,
                     style: GoogleFonts.cairo(
-                      color: AppColors.royalGold,
+                      color: AppColors.electricBlue,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -614,12 +614,12 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.royalGold.withValues(alpha: 0.1),
+                color: AppColors.electricBlue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 _getIcon(device.iconName),
-                color: AppColors.royalGold,
+                color: AppColors.electricBlue,
                 size: 24,
               ),
             ),
@@ -647,7 +647,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     "التكلفة المتوقعة: ${TariffService.calculateCost(device.monthlyConsumptionKwh).toStringAsFixed(1)} جنيه",
                     style: GoogleFonts.cairo(
-                      color: AppColors.royalGold,
+                      color: AppColors.electricBlue,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),

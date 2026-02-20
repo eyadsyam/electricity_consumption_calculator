@@ -185,7 +185,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.dark(
-              primary: AppColors.royalGold,
+              primary: AppColors.electricBlue,
               onPrimary: Colors.black,
               surface: AppColors.deepSurface,
               onSurface: Colors.white,
@@ -310,17 +310,17 @@ class _AddReadingPageState extends State<AddReadingPage> {
                   padding: EdgeInsets.all(isSmallScreen ? 10 : 12),
                   margin: EdgeInsets.only(bottom: isSmallScreen ? 16 : 20),
                   decoration: BoxDecoration(
-                    color: AppColors.royalGold.withValues(alpha: 0.1),
+                    color: AppColors.electricBlue.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: AppColors.royalGold.withValues(alpha: 0.3),
+                      color: AppColors.electricBlue.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         Icons.info_outline,
-                        color: AppColors.royalGold,
+                        color: AppColors.electricBlue,
                         size: isSmallScreen ? 20 : 24,
                       ),
                       SizedBox(width: isSmallScreen ? 10 : 12),
@@ -347,7 +347,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                         children: [
                           Icon(
                             Icons.calendar_today,
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             size: isSmallScreen ? 20 : 24,
                           ),
                           SizedBox(width: isSmallScreen ? 8 : 12),
@@ -373,7 +373,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                             color: AppColors.bgBlack,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: AppColors.royalGold.withValues(alpha: 0.3),
+                              color: AppColors.electricBlue.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Row(
@@ -394,7 +394,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                               ),
                               Icon(
                                 Icons.edit_calendar,
-                                color: AppColors.royalGold,
+                                color: AppColors.electricBlue,
                                 size: isSmallScreen ? 20 : 24,
                               ),
                             ],
@@ -416,7 +416,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                         children: [
                           Icon(
                             Icons.history,
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             size: isSmallScreen ? 20 : 24,
                           ),
                           SizedBox(width: isSmallScreen ? 8 : 12),
@@ -453,25 +453,25 @@ class _AddReadingPageState extends State<AddReadingPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(
-                              color: AppColors.royalGold.withValues(alpha: 0.3),
+                              color: AppColors.electricBlue.withValues(alpha: 0.3),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(
-                              color: AppColors.royalGold.withValues(alpha: 0.3),
+                              color: AppColors.electricBlue.withValues(alpha: 0.3),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                               width: 2,
                             ),
                           ),
                           suffixText: 'كيلووات',
                           suffixStyle: GoogleFonts.cairo(
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             fontSize: isSmallScreen ? 12 : 14,
                           ),
                         ),
@@ -500,7 +500,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                         children: [
                           Icon(
                             Icons.electric_meter,
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             size: isSmallScreen ? 20 : 24,
                           ),
                           SizedBox(width: isSmallScreen ? 8 : 12),
@@ -540,25 +540,25 @@ class _AddReadingPageState extends State<AddReadingPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(
-                              color: AppColors.royalGold.withValues(alpha: 0.3),
+                              color: AppColors.electricBlue.withValues(alpha: 0.3),
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(
-                              color: AppColors.royalGold.withValues(alpha: 0.3),
+                              color: AppColors.electricBlue.withValues(alpha: 0.3),
                             ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                               width: 2,
                             ),
                           ),
                           suffixText: 'كيلووات',
                           suffixStyle: GoogleFonts.cairo(
-                            color: AppColors.royalGold,
+                            color: AppColors.electricBlue,
                             fontSize: isSmallScreen ? 12 : 14,
                           ),
                         ),
@@ -595,7 +595,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                                     },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.deepSurface,
-                                foregroundColor: AppColors.royalGold,
+                                foregroundColor: AppColors.electricBlue,
                                 padding: EdgeInsets.symmetric(
                                   vertical: isSmallScreen ? 10 : 12,
                                 ),
@@ -606,7 +606,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                                       height: isSmallScreen ? 16 : 20,
                                       child: const CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        color: AppColors.royalGold,
+                                        color: AppColors.electricBlue,
                                       ),
                                     )
                                   : Icon(
@@ -642,11 +642,11 @@ class _AddReadingPageState extends State<AddReadingPage> {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: _isListening
-                                    ? AppColors.royalGold
+                                    ? AppColors.electricBlue
                                     : AppColors.deepSurface,
                                 foregroundColor: _isListening
                                     ? Colors.black
-                                    : AppColors.royalGold,
+                                    : AppColors.electricBlue,
                                 padding: EdgeInsets.symmetric(
                                   vertical: isSmallScreen ? 10 : 12,
                                 ),
@@ -692,7 +692,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                           children: [
                             Icon(
                               Icons.receipt_long,
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                               size: isSmallScreen ? 20 : 24,
                             ),
                             SizedBox(width: isSmallScreen ? 8 : 12),
@@ -717,8 +717,8 @@ class _AddReadingPageState extends State<AddReadingPage> {
                                   }
                                 });
                               },
-                              activeColor: AppColors.royalGold,
-                              activeTrackColor: AppColors.royalGold.withValues(
+                              activeColor: AppColors.electricBlue,
+                              activeTrackColor: AppColors.electricBlue.withValues(
                                 alpha: 0.3,
                               ),
                             ),
@@ -752,7 +752,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                             fillColor: AppColors.bgBlack,
                             suffixText: 'جنيه',
                             suffixStyle: GoogleFonts.cairo(
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                             ),
                           ),
                         ),
@@ -772,7 +772,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                           children: [
                             Icon(
                               Icons.analytics,
-                              color: AppColors.royalGold,
+                              color: AppColors.electricBlue,
                               size: isSmallScreen ? 20 : 24,
                             ),
                             SizedBox(width: isSmallScreen ? 8 : 12),
@@ -824,7 +824,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _saveReading,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.royalGold,
+                      backgroundColor: AppColors.electricBlue,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -858,10 +858,10 @@ class _AddReadingPageState extends State<AddReadingPage> {
       decoration: BoxDecoration(
         color: AppColors.deepSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.royalGold.withValues(alpha: 0.1)),
+        border: Border.all(color: AppColors.electricBlue.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.royalGold.withValues(alpha: 0.05),
+            color: AppColors.electricBlue.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -885,7 +885,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.royalGold, size: isSmallScreen ? 20 : 24),
+          Icon(icon, color: AppColors.electricBlue, size: isSmallScreen ? 20 : 24),
           SizedBox(width: isSmallScreen ? 12 : 16),
           Expanded(
             child: FittedBox(
@@ -905,7 +905,7 @@ class _AddReadingPageState extends State<AddReadingPage> {
             child: Text(
               value,
               style: GoogleFonts.cairo(
-                color: AppColors.royalGold,
+                color: AppColors.electricBlue,
                 fontWeight: FontWeight.bold,
                 fontSize: isSmallScreen ? 14 : 16,
               ),

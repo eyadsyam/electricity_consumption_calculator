@@ -124,7 +124,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                             child: Text(
                               'Electra',
                               style: GoogleFonts.montserrat(
-                                color: AppColors.royalGold,
+                                color: AppColors.electricBlue,
                                 fontSize: isSmallScreen ? 24 : 32,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 2,
@@ -155,7 +155,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                               style: GoogleFonts.cairo(
                                 fontSize: isSmallScreen ? 26 : 32,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.royalGold,
+                                color: AppColors.electricBlue,
                               ),
                             ),
                           ),
@@ -269,7 +269,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                             TextSpan(
                               text: "تسجيل الدخول",
                               style: GoogleFonts.cairo(
-                                color: AppColors.royalGold,
+                                color: AppColors.electricBlue,
                                 fontWeight: FontWeight.bold,
                                 fontSize: isSmallScreen ? 13 : 14,
                               ),
@@ -310,10 +310,10 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         color: AppColors.deepSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.royalGold.withValues(alpha: 0.1)),
+        border: Border.all(color: AppColors.electricBlue.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.royalGold.withValues(alpha: 0.05),
+            color: AppColors.electricBlue.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -334,7 +334,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
           ),
           prefixIcon: Icon(
             icon,
-            color: AppColors.royalGold,
+            color: AppColors.electricBlue,
             size: isSmallScreen ? 20 : 24,
           ),
           suffixIcon: (isPasswordField || isConfirmPassword)
@@ -345,7 +345,7 @@ class _SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                             : _isConfirmPasswordVisible)
                         ? Icons.visibility_outlined
                         : Icons.visibility_off_outlined,
-                    color: AppColors.royalGold.withValues(alpha: 0.7),
+                    color: AppColors.electricBlue.withValues(alpha: 0.7),
                     size: isSmallScreen ? 20 : 24,
                   ),
                   onPressed: () {

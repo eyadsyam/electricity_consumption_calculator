@@ -26,10 +26,10 @@ class DeviceInventoryPage extends StatelessWidget {
         backgroundColor:
             Colors.transparent, // Transparent for gradient bg effect if needed
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.royalGold),
+        iconTheme: const IconThemeData(color: AppColors.electricBlue),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle, color: AppColors.royalGold),
+            icon: const Icon(Icons.add_circle, color: AppColors.electricBlue),
             onPressed: () {
               Navigator.push(
                 context,
@@ -44,7 +44,7 @@ class DeviceInventoryPage extends StatelessWidget {
           builder: (context, state) {
             if (state.isLoading) {
               return const Center(
-                child: CircularProgressIndicator(color: AppColors.royalGold),
+                child: CircularProgressIndicator(color: AppColors.electricBlue),
               );
             }
 
@@ -86,13 +86,13 @@ class DeviceInventoryPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: AppColors.royalGold.withValues(alpha: 0.1),
+              color: AppColors.electricBlue.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.inventory_2_outlined,
               size: 80,
-              color: AppColors.royalGold.withValues(alpha: 0.5),
+              color: AppColors.electricBlue.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(height: 20),
@@ -116,7 +116,7 @@ class DeviceInventoryPage extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const AddDevicePage()),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.royalGold,
+              backgroundColor: AppColors.electricBlue,
               foregroundColor: Colors.black,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
@@ -142,7 +142,7 @@ class DeviceInventoryPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.deepSurface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.royalGold.withValues(alpha: 0.1)),
+        border: Border.all(color: AppColors.electricBlue.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
@@ -156,12 +156,12 @@ class DeviceInventoryPage extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.royalGold.withValues(alpha: 0.1),
+              color: AppColors.electricBlue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Icon(
               _getIcon(device.iconName),
-              color: AppColors.royalGold,
+              color: AppColors.electricBlue,
               size: 28,
             ),
           ),
