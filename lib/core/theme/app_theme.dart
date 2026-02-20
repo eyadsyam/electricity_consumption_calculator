@@ -4,8 +4,8 @@ import 'app_colors.dart';
 
 class AppTheme {
   // Luxury Gradients
-  static const LinearGradient luxuryGoldGradient = LinearGradient(
-    colors: AppColors.goldGradient,
+  static const LinearGradient luxuryBlueGradient = LinearGradient(
+    colors: AppColors.electricBlueGradient,
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -21,7 +21,7 @@ class AppTheme {
 
   static ThemeData _buildTheme(Brightness brightness) {
     final bool isDark = brightness == Brightness.dark;
-    final Color primaryColor = AppColors.royalGold;
+    final Color primaryColor = AppColors.electricBlue;
     final Color scaffoldBg = isDark ? AppColors.bgBlack : Colors.white;
     final Color surfaceColor = isDark
         ? AppColors.deepSurface
@@ -35,10 +35,11 @@ class AppTheme {
         seedColor: primaryColor,
         brightness: brightness,
         primary: primaryColor,
-        secondary: AppColors.dullGold,
+        secondary: AppColors.deepElectricBlue,
         surface: surfaceColor,
         error: AppColors.error,
-        onPrimary: Colors.black, // Ensure text on primary is black
+        onPrimary:
+            Colors.white, // Ensure text on primary is white (dark blue bg)
       ),
 
       // Override default blue selection/focus colors
@@ -64,14 +65,16 @@ class AppTheme {
       textTheme: GoogleFonts.cairoTextTheme()
           .apply(
             bodyColor: isDark ? Colors.white : AppColors.luxuryBlack,
-            displayColor: isDark ? AppColors.royalGold : AppColors.dullGold,
+            displayColor: isDark
+                ? AppColors.electricBlue
+                : AppColors.deepElectricBlue,
           )
           .copyWith(
             displayLarge: TextStyle(
               fontSize: 24, // Reduced from 32
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
-              color: isDark ? AppColors.royalGold : AppColors.luxuryBlack,
+              color: isDark ? AppColors.electricBlue : AppColors.luxuryBlack,
             ),
             titleLarge: TextStyle(
               fontSize: 18, // Reduced from 20
@@ -127,7 +130,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryColor,
-          foregroundColor: Colors.black,
+          foregroundColor: Colors.white,
           elevation: 5,
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(

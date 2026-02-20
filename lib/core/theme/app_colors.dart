@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
-/// Luxury Gold & Black color palette
+/// Dark Electric Blue & Black color palette
 class AppColors {
   AppColors._();
 
   // Premium Palette
   static const Color luxuryBlack = Color(0xFF0F0F0F);
   static const Color deepSurface = Color(0xFF1A1A1A);
-  static const Color royalGold = Color(0xFFD4AF37); // Classic Gold
-  static const Color lightGold = Color(0xFFF9E498);
-  static const Color dullGold = Color(0xFFA68931);
+
+  // Dark Electric Blue Palette
+  static const Color electricBlue = Color(0xFF0D47A1); // Dark Electric Blue
+  static const Color lightElectricBlue = Color(
+    0xFF5C9CE6,
+  ); // Light Electric Blue
+  static const Color deepElectricBlue = Color(0xFF0A3474); // Deep Electric Blue
 
   // Accents
   static const Color ivory = Color(0xFFFFFFF0);
@@ -25,10 +29,14 @@ class AppColors {
 
   // GNav Theme
   static const Color navUnselected = Colors.white54;
-  static const Color navSelected = royalGold;
+  static const Color navSelected = electricBlue;
 
   // Gradients
-  static const List<Color> goldGradient = [royalGold, lightGold, dullGold];
+  static const List<Color> electricBlueGradient = [
+    electricBlue,
+    lightElectricBlue,
+    deepElectricBlue,
+  ];
 
   static const List<Color> darkGradient = [
     Color(0xFF1A1A1A),
