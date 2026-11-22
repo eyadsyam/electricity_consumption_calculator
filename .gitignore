@@ -60,3 +60,6 @@ ios/Runner/GeneratedPluginRegistrant.*
 # Secrets
 google-services.json
 GoogleService-Info.plist
+# Local machine files (Flutter SDK path, build logs)
+local.properties
+build_output.txt
